@@ -1,0 +1,12 @@
+* {
+    -ms-touch-action: none;
+    overflow: hidden;
+    background-color: #000000;
+    margin: 0px;
+    padding: 0px;
+	text-align: center;
+}
+
+canvas{
+	display: inline-block;
+}
