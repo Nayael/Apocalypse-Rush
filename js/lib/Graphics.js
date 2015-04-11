@@ -13,7 +13,7 @@ var Graphics = (function (MakeEventDispatcher) {
         }
         this.entity          = entity;
         this.spritesheet     = data.spritesheet;
-        this.isCanvas        = data.isCanvas;
+        this.isCanvas        = data.isCanvas || false;
         this.spritesheetData = data.spritesheetData || null;
         
         // The local position of the sprite in the entity
@@ -57,7 +57,7 @@ var Graphics = (function (MakeEventDispatcher) {
         this.stageX = this.localX + ( (this.entity.x ? this.entity.x : 0) + 0.5 ) | 0;
         this.stageY = this.localY + ( (this.entity.y ? this.entity.y : 0) + 0.5 ) | 0;
         
-        if (isCanvas) {
+        if (this.isCanvas) {
             context.drawImage(this.spritesheet, this.sourceX, this.sourceY, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
         } else {
             context.drawImage(this.spritesheet, this.spriteWidth * this.currentFrame, 0, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
