@@ -103,9 +103,6 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
 			var joystickMove = curJoystickVal - this.joystickVal;	
-			if (joystickMove != 0) {
-				this.addFlag("running");
-			}
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
 				++this.move.x;
 				this.addFlag("running");
@@ -116,6 +113,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				this.addFlag("running");
 			}
 			if (curJoystickVal > 0.5 || curJoystickVal < -0.5) {
+				this.addFlag("running");
 				this.move.x = curJoystickVal;
 			}
 
