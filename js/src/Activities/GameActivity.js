@@ -8,6 +8,8 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 		}
 		Activity.constructor.apply(this, arguments);
 
+		this._assets = {};
+
 		/**
 		 * At each update, make the character move
 		 */
@@ -24,35 +26,47 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 
 	    // this time we'll create a PxLoaderImage instance instead of just 
 	    // giving the loader the image url 
-	    var pxImage = new PxLoaderImage("assets/textures/spritesheet.png"); 
+	    this._assets.pxImage = new PxLoaderImage("assets/textures/spritesheet.png"); 
 	 
-	    loader.add(pxImage); 
+	    loader.add(this._assets.pxImage); 
 		 
 		// callback that runs every time an image loads 
 		loader.addProgressListener(function(e) { 
 		    console.log(e.completedCount + ' / ' + e.totalCount); 
 		}.bind(this));
 
-		loader.addCompletionListener(function (e) {
-			var character = new Character();
-			character.x = 100;
-			character.graphics = new Graphics(character, {
-				spritesheet: pxImage.img,
-				width: 41,
-				height: 49,
-				animated: true,
-				totalFrames: 8,
-				frameRate: 150
-			});
-			character.graphics.localX = -character.graphics.spriteWidth / 2;
-			this._entities.push(character);
-
-			this._screen.addChild(character.graphics);
-
-			character.addListener(InputManager.InputEvent.TOUCH_CLICKED, this.onTouch, this);
-		}.bind(this));
+		loader.addCompletionListener(this.onGameLoaded.bind(this));
 		 
 		loader.start();
+	};
+
+	GameActivity.prototype.onGameLoaded = function(e) {
+		this.initMap();
+
+		var character = new Character();
+		character.x = 100;
+		character.graphics = new Graphics(character, {
+			spritesheet: this._assets.pxImage.img,
+			width: 41,
+			height: 49,
+			animated: true,
+			totalFrames: 8,
+			frameRate: 150
+		});
+		character.graphics.localX = -character.graphics.spriteWidth / 2;
+		this._entities.push(character);
+
+		this._screen.addChild(character.graphics);
+
+		character.addListener(InputManager.InputEvent.TOUCH_CLICKED, this.onTouch, this);
+	};
+
+	GameActivity.prototype.initMap = function() {
+		this._map = new Map({
+			activity: this
+		});
+
+		this._screen.addChild(this._map.graphics);
 	};
 
 	GameActivity.prototype.onTouch = function(e) {
