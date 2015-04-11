@@ -176,7 +176,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
                 children = sc.getChildren();
                 for (j = 0; j < children.length; j++) {
                     child = children[j];
-                    if (!child || !child.graphics.touchable || child.graphics.stageX > e.stageX || child.graphics.stageY > e.stageY || child.graphics.stageX + child.graphics.spriteWidth < e.stageX || child.graphics.stageY + child.graphics.spriteHeight < e.stageY) {
+                    if (!child || !child.graphics || !child.graphics.touchable || child.graphics.stageX > e.stageX || child.graphics.stageY > e.stageY || child.graphics.stageX + child.graphics.spriteWidth < e.stageX || child.graphics.stageY + child.graphics.spriteHeight < e.stageY) {
                         continue;
                     }
                     touchedChild = child;

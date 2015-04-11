@@ -33,7 +33,7 @@ var Activity = (function(Screen) {
 
 		for (var i = 0, nbEnt = this._entities.length, ent; i < nbEnt; ++i) {
 			ent = this._entities[i];
-			if (ent && ent.update) {
+			if (ent && ent.update && ent.enabled) {
 				ent.update(dt);
 			}
 		}

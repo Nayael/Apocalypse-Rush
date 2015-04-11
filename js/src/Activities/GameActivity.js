@@ -1,4 +1,4 @@
-var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager) {
+var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb) {
 	'use strict';
 
 	function GameActivity(params) {
@@ -11,6 +11,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this._assets = {};
 		this._players = [];
 		this.bullets = [];
+		this.bomb = null;
 	}
 	GameActivity.inheritsFrom(Activity);
 
@@ -22,6 +23,10 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	};
 
 	GameActivity.prototype.launchGame = function() {
+		this.bomb = new Bomb();
+		this._entities.push(this.bomb);
+		this._screen.addChild(this.bomb);
+
 		// this._assets.sounds["MUSIC_Layer_01"].play();
 		// this._assets.sounds["MUSIC_Layer_02"].play();
 		// this._assets.sounds["MUSIC_Layer_03"].play();
@@ -132,6 +137,18 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		}
 	}
 
+	GameActivity.prototype.getFirstPlayer = function () {
+		var firstPlayer = null;
+		for (var i = 0, xMax = 0, nbPlayers = this._players.length, player; i < nbPlayers; ++i) {
+			player = this._players[i];
+			if (player.x > xMax) {
+				xMax = player.x;
+				firstPlayer = player;
+			}
+		}
+		return firstPlayer;
+	}
+
 	return GameActivity;
 
-}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager));
+}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb));
