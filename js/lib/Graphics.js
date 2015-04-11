@@ -19,8 +19,8 @@ var Graphics = (function (MakeEventDispatcher) {
         // The local position of the sprite in the entity
         this.localX = data.localX || 0;
         this.localY = data.localY || 0;
-        this.stageX = this.localX + ( (this.entity.x ? this.entity.x : 0) + 0.5 ) | 0;
-        this.stageY = this.localY + ( (this.entity.y ? this.entity.y : 0) + 0.5 ) | 0;
+        this.stageX = this.localX + ( ((this.entity && this.entity.x) ? this.entity.x : 0) + 0.5 ) | 0;
+        this.stageY = this.localY + ( ((this.entity && this.entity.y) ? this.entity.y : 0) + 0.5 ) | 0;
         
         this.currentFrame = 0;     // The current frame to draw
         this.frameCount   = 0;     // The number of frames elapsed since the first draw
@@ -54,8 +54,8 @@ var Graphics = (function (MakeEventDispatcher) {
         if (!this.enabled) {
             return;
         }
-        this.stageX = this.localX + ( (this.entity.x ? this.entity.x : 0) + 0.5 ) | 0;
-        this.stageY = this.localY + ( (this.entity.y ? this.entity.y : 0) + 0.5 ) | 0;
+        this.stageX = this.localX + ( ((this.entity && this.entity.x) ? this.entity.x : 0) + 0.5 ) | 0;
+        this.stageY = this.localY + ( ((this.entity && this.entity.y) ? this.entity.y : 0) + 0.5 ) | 0;
         
         if (this.spritesheet) {
             if (this.isCanvas) {

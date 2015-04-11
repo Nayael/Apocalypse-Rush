@@ -13,56 +13,40 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 	GameActivity.inheritsFrom(Activity);
 
-	GameActivity.prototype.init = function() {
-		var loader = new PxLoader();
-
-		// this time we'll create a PxLoaderImage instance instead of just 
-		// giving the loader the image url 
-		this._assets = {
-			cat_idle_left: new PxLoaderImage("assets/textures/characters/idle_left.png"),
-			cat_idle_right: new PxLoaderImage("assets/textures/characters/idle_right.png"),
-			cat_jump_l: new PxLoaderImage("assets/textures/characters/jump_l.png"),
-			cat_jump_r: new PxLoaderImage("assets/textures/characters/jump_r.png"),
-			cat_left: new PxLoaderImage("assets/textures/characters/left.png"),
-			cat_right: new PxLoaderImage("assets/textures/characters/right.png"),
-		}
-
-		for (var prop in this._assets) {
-			if (this._assets.hasOwnProperty(prop)) {
-				loader.add(this._assets[prop]);
-			}
-		}
-
-		// callback that runs every time an image loads 
-		loader.addProgressListener(function(e) {
-			console.log(e.completedCount + ' / ' + e.totalCount);
-		}.bind(this));
-
-		loader.addCompletionListener(this.onGameLoaded.bind(this));
-
-		loader.start();
-	};
-
-	GameActivity.prototype.onGameLoaded = function(e) {
+	GameActivity.prototype.launch = function(assets) {
+		console.log('assets: ', assets);
+		this._assets = assets;
 		this.initMap();
 		this.initPlayers();
+		this.launchGame();
+	};
+
+	GameActivity.prototype.launchGame = function() {
+		this._assets.sounds["MUSIC_Layer_01"].play();
+		this._assets.sounds["MUSIC_Layer_02"].play();
+		this._assets.sounds["MUSIC_Layer_03"].play();
+		this._assets.sounds["MUSIC_Layer_04"].play();
 	};
 
 	GameActivity.prototype.initPlayers = function () {
 		var controllers = GamepadManager.instance.getControllers();
-		console.log('controllers: ', controllers);
 		for (var i = 0, character; i < controllers.length; i++) {
+			if (i >= 4) {
+				break;
+			}
 			character = new Character({
 				sprites: {
-					idle_left: this._assets.cat_idle_left.img,
-					idle_right: this._assets.cat_idle_right.img,
-					jump_l: this._assets.cat_jump_l.img,
-					jump_r: this._assets.cat_jump_r.img,
-					left: this._assets.cat_left.img,
-					right: this._assets.cat_right.img
+					idle_left: this._assets[i + "_idle_l"].img,
+					idle_right: this._assets[i + "_idle_r"].img,
+					jump_l: this._assets[i + "_jump_l"].img,
+					jump_r: this._assets[i + "_jump_r"].img,
+					left: this._assets[i + "_run_l"].img,
+					right: this._assets[i + "_run_r"].img
 				},
 				width: 36,
-				height: 36
+				height: 36,
+				spriteWidth: 36,
+				spriteHeight: 36
 			});
 			character.x = 100 + i * 10;
 			this._entities.push(character);

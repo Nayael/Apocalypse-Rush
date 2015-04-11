@@ -13,6 +13,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 		// ID of the character is also the gamepad ID
 		this.id = -1;
 		this.flags = [];
+		this.joystickVal = 0;
 		this.move = {
 			x: 0,
 			y: 0
@@ -76,6 +77,12 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 
 		// Move
 		if (this.hasFlag("canRun")) {
+			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
+			var joystickMove = curJoystickVal - this.joystickVal;
+			if (joystickMove != 0) {
+				this.move.x += joystickMove;
+				this.addFlag("running");
+			}
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
 				++this.move.x;
 				this.addFlag("running");
@@ -85,6 +92,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 				--this.move.x;
 				this.addFlag("running");
 			}
+			this.joystickVal = curJoystickVal;
 		}
 
 		if (this.hasFlag("canJump")) {

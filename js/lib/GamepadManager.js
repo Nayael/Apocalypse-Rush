@@ -63,8 +63,8 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		////////////////////////
 		var _controllers = [];
 
-		window.addEventListener("gamepadconnected", _onGamepadConnected);
-		window.addEventListener("gamepaddisconnected", _onGamepadDisconnected);
+		window.addEventListener("gamepadconnected", _onGamepadConnected.bind(this));
+		window.addEventListener("gamepaddisconnected", _onGamepadDisconnected.bind(this));
 
 		////////////////////
 		// PUBLIC METHODS //
@@ -76,7 +76,7 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		 * @return {Boolean}           True if the button is pressed
 		 */
 		this.isButtonDown = function (gamepadID, bt) {
-			var controller = _getController(gamepadID);
+			var controller = this.getController(gamepadID);
 			if (controller == null) {
 				return false;
 			}
@@ -90,7 +90,7 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		 * @return {Boolean}           True if the button is pressed
 		 */
 		this.isButtonUp = function (gamepadID, bt) {
-			var controller = _getController(gamepadID);
+			var controller = this.getController(gamepadID);
 			if (controller == null) {
 				return false;
 			}
@@ -102,16 +102,16 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		/////////////////////
 		function _onGamepadConnected(e) {
 			console.log('e: ', e);
-			_addController(e.gamepad);
+			_addController.call(this, e.gamepad);
 		}
 
 		function _onGamepadDisconnected(e) {
 			console.log('e: ', e);
-			_removeController(e.gamepad);
+			_removeController.call(this, e.gamepad);
 		}
 
 		function _addController(gp) {
-			var controller = _getController(gp);
+			var controller = this.getController(gp);
 			if (controller != null) {
 				return;
 			}
@@ -119,26 +119,11 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		}
 
 		function _removeController(gp) {
-			var controller = _getController(gp);
+			var controller = this.getController(gp);
 			if (controller == null) {
 				return;
 			}
 			_controllers.splice(i, 1);
-		}
-
-		function _getController (gp) {
-			var controller = null;
-			if (gp instanceof Gamepad) {
-				for (var i = 0; i < _controllers.length; ++i) {
-					if (_controllers[i].gamepad == gp) {
-						controller = _controllers[i];
-						break;
-					}
-				}
-			} else if (typeof(gp) === 'number' && (gp in _controllers)) {
-				controller = _controllers[gp];
-			}
-			return controller;
 		}
 
 		function _update() {
@@ -147,9 +132,9 @@ var GamepadManager = (function(MakeEventDispatcher) {
 			for (i = 0; i < gamepads.length; i++) {
 				if (gamepads[i]) {
 					if (!(gamepads[i].index in _controllers)) {
-						_addController(gamepads[i]);
+						_addController.call(this, gamepads[i]);
 					} else {
-						_controllers[gamepads[i].index] = _getController(gamepads[i]) || new Controller(gamepads[i]);
+						_controllers[gamepads[i].index] = this.getController(gamepads[i]) || new Controller(gamepads[i]);
 					}
 				}
 			}
@@ -210,6 +195,21 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		}
 
 		requestAnimationFrame(_update.bind(this));
+
+		this.getController = function (gp) {
+			var controller = null;
+			if (gp instanceof Gamepad) {
+				for (var i = 0; i < _controllers.length; ++i) {
+					if (_controllers[i].gamepad == gp) {
+						controller = _controllers[i];
+						break;
+					}
+				}
+			} else if (typeof(gp) === 'number' && (gp in _controllers)) {
+				controller = _controllers[gp];
+			}
+			return controller;
+		}
 
 		this.getControllers = function () {
 			return _controllers;

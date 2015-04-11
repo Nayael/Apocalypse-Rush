@@ -33,6 +33,9 @@ var Application = (function(Stage) {
 			activity.application = this;
 			this._activities.push(activity);
 			this._stage.pushScreen(activity.getScreen());
+			if (activity.init) {
+				activity.init();
+			}
 		};
 
 		this.removeActivity = function (activity) {
