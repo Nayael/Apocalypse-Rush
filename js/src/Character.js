@@ -6,9 +6,17 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 		if (!(this instanceof Character)) {
 			return new Character(params);
 		}
-		Entity.constructor.apply(this, params);
+		Entity.apply(this, arguments);
 
-		this.speed = 100;
+		this.previousX = this.x;
+		this.previousY = this.y;
+
+		this.speed = 5000;
+		this.xSpeed = 0;
+		this.ySpeed = 0;
+		this.xForce = 0;
+		this.yForce = 500;
+		this.onTheGround = false;
 
 		// ID of the character is also the gamepad ID
 		this.id = -1;
@@ -21,8 +29,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 
 		this.graphics = new Graphics(this, {
 			spritesheet: params.sprites.idle_right,
-			width: params.width,
-			height: params.height
+			width: params.spriteWidth,
+			height: params.spriteHeight
 		});
 		this.graphics.localX = -this.graphics.spriteWidth / 2;
 	}
@@ -68,6 +76,18 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 
 		// this.handleAnim();
 		this.applyMove(dt);
+		this.updatePhysics(dt);
+	}
+
+	Character.prototype.updatePhysics = function (dt) {
+		this.previousX = this.x;
+		this.previousY = this.y;
+
+		this.x += this.xSpeed * dt + .5 * this.xForce * dt * dt;
+		this.y += this.ySpeed * dt + .5 * this.yForce * dt * dt;
+	
+		this.xSpeed += this.xForce * dt;
+		this.ySpeed += this.yForce * dt;
 	}
 
 	Character.prototype.handleControls = function (dt) {
@@ -93,18 +113,78 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 				this.addFlag("running");
 			}
 			this.joystickVal = curJoystickVal;
+
+			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("UP"))) {
+				--this.move.y;
+				this.addFlag("running");
+			}
+
+			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("DOWN"))) {
+				++this.move.y;
+				this.addFlag("running");
+			}
 		}
 
 		if (this.hasFlag("canJump")) {
-
+			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("A"))) {
+				this.jump();
+				this.removeFlag("canJump");
+				this.addFlag("jumping");
+			}
 		}
 	}
 
 	Character.prototype.applyMove = function (dt) {
-		this.x += this.move.x * dt * this.speed;
-		this.y += this.move.y * dt * this.speed;
-		
+		var diffX = this.move.x * dt * this.speed;
+
+		if ((this.xSpeed < 0 && this.move.x > 0) || (this.xSpeed > 0 && this.move.x < 0))
+			this.xSpeed = 0;
+
+		this.xSpeed += diffX;
+		if (this.xSpeed > 1500) {
+			this.xSpeed = 1500;
+		}
+		if (this.xSpeed < -1500) {
+			this.xSpeed = -1500;
+		}
+		if (this.move.x == 0) {
+			this.xSpeed *= .8 + .1 * dt;
+		}
+		// this.ySpeed += this.move.y * dt * this.speed;
 	}
+
+	Character.prototype.jump = function () {
+		this.ySpeed = -400;
+	}
+
+	Character.prototype.handleCollision = function (collisionPoint) {
+		if (collisionPoint == null) {
+			this.onTheGround = false;
+			this.removeFlag("canJump");
+			return;
+		}
+
+		var angle = collisionPoint.angle;
+		var tempAngle = Math.atan2(this.previousY - this.y, this.previousX - this.x);
+
+		this.x += Math.cos(angle) * (30 - collisionPoint.dist + (this.onTheGround ? -1 : 0));
+		this.y += Math.sin(angle) * (30 - collisionPoint.dist + (this.onTheGround ? -1 : 0));
+
+		angle -= tempAngle - angle;
+
+		var totalSpeed = Math.sqrt(this.xSpeed * this.xSpeed + this.ySpeed * this.ySpeed);
+		if (!this.onTheGround)
+			totalSpeed *= .2;
+
+		// this.xSpeed = Math.cos(angle) * totalSpeed;
+		this.ySpeed = Math.sin(angle) * totalSpeed;
+
+		if (collisionPoint.angle < - Math.PI / 4 && collisionPoint.angle > - 3 * Math.PI / 4) {
+			this.addFlag("canJump");
+			this.onTheGround = true;
+		}
+	}
+
 
 	return Character;
 
