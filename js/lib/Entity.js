@@ -29,7 +29,7 @@ var Entity = (function(MakeEventDispatcher) {
 	};
 
 
-	Entity.prototype.update = function() {
+	Entity.prototype.update = function(dt) {
 		
 	};
 

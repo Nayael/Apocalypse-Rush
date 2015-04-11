@@ -1,6 +1,6 @@
 window.onload = function() {
 
-    var stage = new Stage(window.innerWidth, window.innerHeight, "rgb(255, 255, 200)");
+    var stage = new Stage(1952, 672, "rgb(255, 255, 200)");
 	var application = new Application(stage);
 	InputManager.instance.init();
 

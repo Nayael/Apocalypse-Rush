@@ -18,6 +18,9 @@ var Application = (function(Stage) {
 		////////////////////
 		this._stage = stage || new Stage(window.innerWidth, window.innerHeight);
 		this._activities = [];
+		this._prevTime = Date.now();
+		this._time = 0;
+		this._dt = 0;
 
 		////////////////////
 		// PUBLIC METHODS //
@@ -41,22 +44,35 @@ var Application = (function(Stage) {
 		};
 
 		this.update = function () {
+			this._prevTime = this._prevTime || Date.now();
+	        this._time = Date.now();
+	        this._dt = (this._time - this._prevTime) / 1000;
+	        if (this._dt > 0.2) {
+	            this._dt = 0.2;
+	        }
+
 			this._stage.render();
 			for (var i = 0, nbAct = this._activities.length, activity; i < nbAct; ++i) {
 				activity = this._activities[i];
 				if (!activity.isEnabled()) {
 					continue;
 				}
-				activity.update();
+				activity.update(this._dt);
 			}
 
 			// Call for update at the next frame
 			this.mainLoop = requestAnimationFrame(this.update.bind(this));
+
+	        this._prevTime = this._time;
 		};
 
 		this.getStage = function () {
 			return this._stage;
 		};
+
+		this.getDT = function () {
+			return this._dt;
+		}
 	}
 
 	return Application;

@@ -1,4 +1,4 @@
-var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager) {
+var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character) {
 	'use strict';
 
 	function GameActivity(existingEntities) {
@@ -11,11 +11,11 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 		/**
 		 * At each update, make the character move
 		 */
-		this.update = function() {
-			if (this._entities.length > 0) {
-				this._entities[0].x++;
-			}
-		};
+		// this.update = function() {
+		// 	if (this._entities.length > 0) {
+		// 		this._entities[0].x++;
+		// 	}
+		// };
 	}
 	GameActivity.inheritsFrom(Activity);
 
@@ -34,14 +34,17 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 		}.bind(this));
 
 		loader.addCompletionListener(function (e) {
-			var character = new Entity();
+			var character = new Character();
+			character.x = 100;
 			character.graphics = new Graphics(character, {
 				spritesheet: pxImage.img,
 				width: 41,
 				height: 49,
 				animated: true,
-				totalFrames: 8
+				totalFrames: 8,
+				frameRate: 150
 			});
+			character.graphics.localX = -character.graphics.spriteWidth / 2;
 			this._entities.push(character);
 
 			this._screen.addChild(character.graphics);
@@ -49,7 +52,7 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 			character.addListener(InputManager.InputEvent.TOUCH_CLICKED, this.onTouch, this);
 		}.bind(this));
 		 
-		loader.start(); 
+		loader.start();
 	};
 
 	GameActivity.prototype.onTouch = function(e) {
@@ -58,4 +61,4 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 
 	return GameActivity;
 
-}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager));
+}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character));

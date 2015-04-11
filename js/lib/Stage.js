@@ -31,7 +31,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         
         // Logical Ratio
         this.stageRatio = stageWidth / stageHeight;
-        var navigatorRatio = window.innerWidth / (window.innerHeight);
+        var navigatorRatio = window.innerWidth / window.innerHeight;
         var width, height;
 
         if (navigatorRatio > this.stageRatio) {
@@ -42,7 +42,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
             height = window.innerWidth / this.stageRatio;
         }
         this.canvas.scaleFactor = width / stageWidth;
-        
+
         width = (width | 0);
         height = (height | 0);
 
@@ -50,8 +50,10 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
 
         // Add the canvas to the document
         document.body.appendChild(this.canvas);
-        this.canvas.style.width  = width + 'px';
-        this.canvas.style.height = height + 'px';
+        this.canvas.width  *= this.canvas.scaleFactor;
+        this.canvas.height *= this.canvas.scaleFactor;
+        // this.canvas.style.width  = width + 'px';
+        // this.canvas.style.height = height + 'px';
 
         // Screen Handling
         this.screen = null;
@@ -65,8 +67,11 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         this.canvasBuffer.scaleFactor = width / stageWidth;
         this.canvasBuffer.width    = stageWidth;
         this.canvasBuffer.height   = stageHeight;
-        this.canvasBuffer.style.width  = width + 'px';
-        this.canvasBuffer.style.height = height + 'px';
+        // this.canvasBuffer.style.width  = width + 'px';
+        // this.canvasBuffer.style.height = height + 'px';
+
+        this.canvasBuffer.width    *= this.canvas.scaleFactor;
+        this.canvasBuffer.height   *= this.canvas.scaleFactor;
 
 
         ////////////
@@ -126,7 +131,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         this.render = function() {
             // Clearing the canvas
             this.context.fillStyle = this.backgroundColor || 'rgb(255, 255, 255)';
-            this.context.fillRect(0, 0, this.stageWidth, this.stageHeight);
+            this.context.fillRect(0, 0, this.stageWidth * this.canvas.scaleFactor, this.stageHeight * this.canvas.scaleFactor);
 
             // Updating all the children
             for (var i = 0, j = 0, sc = null, child = null, children = null, bufferChildren = null, nbScreens = _screens.length; i < nbScreens; ++i) {
@@ -143,7 +148,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
                         child.render(this.context);
                     } else if (child) {
                         if ( bufferChildren.indexOf(child) != -1) {
-                            this.context.drawImage(this.canvasBuffer, child.stageX, child.stageY, child.spriteWidth, child.spriteHeight, child.stageX, child.stageY, child.spriteWidth, child.spriteHeight);
+                            this.context.drawImage(this.canvasBuffer, child.stageX, child.stageY, child.spriteWidth, child.spriteHeight, child.stageX * this.canvas.scaleFactor, child.stageY * this.canvas.scaleFactor, child.spriteWidth * this.canvas.scaleFactor, child.spriteHeight * this.canvas.scaleFactor);
                         } else {
                             child.draw(this.context);
                         }
