@@ -210,6 +210,10 @@ var GamepadManager = (function(MakeEventDispatcher) {
 		}
 
 		requestAnimationFrame(_update.bind(this));
+
+		this.getControllers = function () {
+			return _controllers;
+		}
 	}
 	GamepadManager.BUTTONS = ["A", "B", "X", "Y", "LB", "RB", "LT", "RT", "BACK", "START", "LEFT_JOYSTICK", "RIGHT_JOYSTICK", "UP", "DOWN", "LEFT", "RIGHT", "GUIDE"];
 

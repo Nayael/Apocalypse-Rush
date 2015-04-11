@@ -1,14 +1,15 @@
-var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character) {
+var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager) {
 	'use strict';
 
-	function GameActivity(existingEntities) {
+	function GameActivity(params) {
 		// enforces new
 		if (!(this instanceof GameActivity)) {
-			return new GameActivity(existingEntities);
+			return new GameActivity(params);
 		}
-		Activity.constructor.apply(this, arguments);
+		Activity.constructor.apply(this, params);
 
 		this._assets = {};
+		this._players = [];
 	}
 	GameActivity.inheritsFrom(Activity);
 
@@ -44,25 +45,33 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	GameActivity.prototype.onGameLoaded = function(e) {
 		this.initMap();
-
-		var character = new Character({
-			sprites: {
-				idle_left: this._assets.cat_idle_left.img,
-				idle_right: this._assets.cat_idle_right.img,
-				jump_l: this._assets.cat_jump_l.img,
-				jump_r: this._assets.cat_jump_r.img,
-				left: this._assets.cat_left.img,
-				right: this._assets.cat_right.img
-			},
-			width: 36,
-			height: 36
-		});
-		this._entities.push(character);
-
-		this._screen.addChild(character.graphics);
-
-		character.takeControl(0);
+		this.initPlayers();
 	};
+
+	GameActivity.prototype.initPlayers = function () {
+		var controllers = GamepadManager.instance.getControllers();
+		console.log('controllers: ', controllers);
+		for (var i = 0, character; i < controllers.length; i++) {
+			character = new Character({
+				sprites: {
+					idle_left: this._assets.cat_idle_left.img,
+					idle_right: this._assets.cat_idle_right.img,
+					jump_l: this._assets.cat_jump_l.img,
+					jump_r: this._assets.cat_jump_r.img,
+					left: this._assets.cat_left.img,
+					right: this._assets.cat_right.img
+				},
+				width: 36,
+				height: 36
+			});
+			character.x = 100 + i * 10;
+			this._entities.push(character);
+
+			this._screen.addChild(character.graphics);
+
+			character.takeControl(i);
+		}
+	}
 
 	GameActivity.prototype.initMap = function() {
 		this._map = new Map({
@@ -88,4 +97,4 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	return GameActivity;
 
-}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character));
+}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager));
