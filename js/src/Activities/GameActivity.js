@@ -110,6 +110,9 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			bullet = this.bullets[i];
 			for (var j = 0; j < this._players.length; j++) {
 				player = this._players[j];
+				if (!player.isVulnerable) {
+					continue;
+				}
 
 				if (bullet.owner != player.id) {
 					playerX = player.x + player.width / 2;

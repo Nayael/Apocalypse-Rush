@@ -18,6 +18,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.xForce = 0;
 		this.yForce = 1500;
 		this.onTheGround = false;
+		this.isVulnerable = true;
 
 		this.faceRight = true;
 		this.bullets = [];
@@ -70,6 +71,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 	}
 
 	Character.prototype.die = function (xPosition) {
+		this.isVulnerable = false;
 		this.removeFlag("canRun");
 		this.removeFlag("canJump");
 		this.removeFlag("canShoot");
@@ -81,6 +83,16 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.addFlag("canJump");
 			this.addFlag("canShoot");
 		}).bind(this), 1000);
+
+		var blink = setInterval(function () {
+			this.graphics.enabled = !this.graphics.enabled;
+		}.bind(this), 150);
+
+		setTimeout((function() {
+			clearInterval(blink);
+			this.graphics.enabled = true;
+			this.isVulnerable = true;
+		}).bind(this), 2500);
 	}
 
 	Character.prototype.update = function (dt) {
