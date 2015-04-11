@@ -69,6 +69,20 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.addFlag("canShoot");
 	}
 
+	Character.prototype.die = function (xPosition) {
+		this.removeFlag("canRun");
+		this.removeFlag("canJump");
+		this.removeFlag("canShoot");
+		this.x = xPosition;
+		this.y = -100;
+
+		setTimeout((function() {
+			this.addFlag("canRun");
+			this.addFlag("canJump");
+			this.addFlag("canShoot");
+		}).bind(this), 1000);
+	}
+
 	Character.prototype.update = function (dt) {
 		this.move.x = 0;
 		this.move.y = 0;
@@ -127,6 +141,15 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				this.addFlag("running");
 				this.move.x = curJoystickVal;
 			}
+
+			if (this.hasFlag("canJump")) {
+				this.removeFlag("jumping");
+				if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("A"))) {
+					this.jump();
+					this.removeFlag("canJump");
+					this.addFlag("jumping");
+				}
+			}
 		}
 
 		if (this.hasFlag("canShoot")) {
@@ -134,15 +157,6 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("X"))) {
 				this.shoot();
 				this.addFlag("shooting");
-			}
-		}
-
-		if (this.hasFlag("canJump")) {
-			this.removeFlag("jumping");
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("A"))) {
-				this.jump();
-				this.removeFlag("canJump");
-				this.addFlag("jumping");
 			}
 		}
 	}

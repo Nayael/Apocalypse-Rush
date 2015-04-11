@@ -52,14 +52,24 @@ var Map = (function(Entity) {
 
 		// minX -= 100;
 
-		if (minX > this.cameraOffset + 100) {
-			this.cameraOffset = minX - 100;
-		}
+		// if (minX > this.cameraOffset + 100) {
+		// 	this.cameraOffset = minX - 100;
+		// }
 		if (maxX > this.cameraOffset + 1500) {
 			this.cameraOffset = maxX - 1500;
 		}
 
 		this.graphics.sourceX = this.cameraOffset;
+
+		this.checkPlayersPosition();
+	}
+
+	Map.prototype.checkPlayersPosition = function () {
+		for (var i = this.activity._players.length; i--;) {
+			if (this.activity._players[i].x < this.cameraOffset) {
+				this.activity._players[i].die(this.cameraOffset + 960);
+			}
+		}
 	}
 
 	Map.prototype.loadBlocks = function (pattern) {
