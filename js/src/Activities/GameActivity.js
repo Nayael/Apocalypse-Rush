@@ -14,7 +14,6 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	GameActivity.inheritsFrom(Activity);
 
 	GameActivity.prototype.launch = function(assets) {
-		console.log('assets: ', assets);
 		this._assets = assets;
 		this.initMap();
 		this.initPlayers();
@@ -22,10 +21,10 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	};
 
 	GameActivity.prototype.launchGame = function() {
-		this._assets.sounds["MUSIC_Layer_01"].play();
-		this._assets.sounds["MUSIC_Layer_02"].play();
-		this._assets.sounds["MUSIC_Layer_03"].play();
-		this._assets.sounds["MUSIC_Layer_04"].play();
+		// this._assets.sounds["MUSIC_Layer_01"].play();
+		// this._assets.sounds["MUSIC_Layer_02"].play();
+		// this._assets.sounds["MUSIC_Layer_03"].play();
+		// this._assets.sounds["MUSIC_Layer_04"].play();
 	};
 
 	GameActivity.prototype.initPlayers = function () {
@@ -36,23 +35,23 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			}
 			character = new Character({
 				sprites: {
-					idle_left: this._assets[i + "_idle_l"].img,
-					idle_right: this._assets[i + "_idle_r"].img,
-					jump_l: this._assets[i + "_jump_l"].img,
-					jump_r: this._assets[i + "_jump_r"].img,
-					left: this._assets[i + "_run_l"].img,
-					right: this._assets[i + "_run_r"].img
+					idle_l: this._assets.images["player_" + i + "-idle_l"],
+					idle_r: this._assets.images["player_" + i + "-idle_r"],
+					jump_l: this._assets.images["player_" + i + "-jump_l"],
+					jump_r: this._assets.images["player_" + i + "-jump_r"],
+					run_l: this._assets.images["player_" + i + "-run_l"],
+					run_r: this._assets.images["player_" + i + "-run_r"]
 				},
-				width: 36,
-				height: 36,
-				spriteWidth: 36,
-				spriteHeight: 36
+				width: 75,
+				height: 105,
+				spriteWidth: 75,
+				spriteHeight: 105
 			});
 			character.x = 100 + i * 10;
 			this._entities.push(character);
 			this._players.push(character);
 
-			this._screen.addChild(character.graphics);
+			this._screen.addChild(character);
 
 			character.takeControl(i);
 		}
@@ -69,7 +68,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			radius: 10
 		};
 
-		this._screen.addChild(this._map.graphics);
+		this._screen.addChild(this._map);
 	};
 
 	GameActivity.prototype.update = function (dt) {

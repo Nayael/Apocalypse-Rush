@@ -1,4 +1,4 @@
-var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
+var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphics) {
 	'use strict';
 
 	function Character(params) {
@@ -27,8 +27,9 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 			y: 0
 		};
 
+		this.sprites = params.sprites
 		this.graphics = new Graphics(this, {
-			spritesheet: params.sprites.idle_right,
+			spritesheet: params.sprites.idle_r,
 			width: params.spriteWidth,
 			height: params.spriteHeight
 		});
@@ -74,9 +75,9 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 			this.handleControls(dt);
 		}
 
-		// this.handleAnim();
 		this.applyMove(dt);
 		this.updatePhysics(dt);
+		this.handleAnim();
 	}
 
 	Character.prototype.updatePhysics = function (dt) {
@@ -97,6 +98,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 
 		// Move
 		if (this.hasFlag("canRun")) {
+			this.removeFlag("running");
+
 			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
 			var joystickMove = curJoystickVal - this.joystickVal;
 			if (joystickMove != 0) {
@@ -126,11 +129,44 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 		}
 
 		if (this.hasFlag("canJump")) {
+			this.removeFlag("jumping");
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("A"))) {
 				this.jump();
 				this.removeFlag("canJump");
 				this.addFlag("jumping");
 			}
+		}
+	}
+
+	Character.prototype.handleAnim = function() {
+		var graphics = null;
+		var spritesheet = null;
+		if (this.hasFlag('running') && !this.hasFlag('jumping')) {
+			spritesheet = this.sprites[this.xSpeed < 0 ? "run_l" : "run_r"];
+			if (this.graphics.spritesheet != spritesheet) {
+				this.graphics = new Graphics(this, {
+					spritesheet: spritesheet,
+					localY: -20,
+					width: 86,
+					height: 105,
+					animated: true,
+					frameRate: 150,
+					totalFrames: 4
+				});
+			}
+		} else if (!this.hasFlag('running') && !this.hasFlag('jumping') && !this.hasFlag('shooting')){
+			spritesheet = this.sprites[this.xSpeed < 0 ? "run_l" : "run_r"];
+			// if (this.graphics.spritesheet != spritesheet) {
+			// 	this.graphics = new Graphics(this, {
+			// 		spritesheet: spritesheet,
+			// 		localY: -20,
+			// 		width: 86,
+			// 		height: 105,
+			// 		animated: true,
+			// 		frameRate: 150,
+			// 		totalFrames: 4
+			// 	});
+			// }
 		}
 	}
 
@@ -188,4 +224,4 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine) {
 
 	return Character;
 
-}(Entity, Keyboard, GamepadManager, StateMachine));
+}(Entity, Keyboard, GamepadManager, StateMachine, Graphics));

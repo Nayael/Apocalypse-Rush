@@ -12,10 +12,7 @@ var Screen = (function() {
 
         if (entities) {
             for (var i = 0, entity; i < entities.length; i++) {
-                entity = entities[i];
-                if (entity.graphics) {
-                    _children.push(entity.graphics);
-                }
+                _children.push(entities[i]);
             }
         }
 
@@ -37,9 +34,6 @@ var Screen = (function() {
          * @param  {Object} child The child to add
          */
         this.addChild = function(child, addToBuffer, index) {
-            if (child.graphics) {
-                child = child.graphics;
-            }
             if (index === undefined || index > _children.length) {
                 index = _children.length;
             }
@@ -54,9 +48,6 @@ var Screen = (function() {
          * @param  {Object} child The child to remove
          */
         this.removeChild = function(child) {
-            if (child.graphics) {
-                child = child.graphics;
-            }
             var index = _children.indexOf(child);
             if (index == -1) {
                 return;

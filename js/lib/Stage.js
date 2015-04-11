@@ -121,8 +121,8 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
                 bufferChildren = sc.getBufferChildren();
                 for (j = 0, child = null; j < bufferChildren.length; ++j) {
                     child = bufferChildren[j];
-                    if (child) {
-                        child.draw(context);
+                    if (child && child.graphics) {
+                        child.graphics.draw(context);
                     }
                 }
             }
@@ -146,11 +146,11 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
                     child = children[j];
                     if (child.render) {
                         child.render(this.context);
-                    } else if (child) {
+                    } else if (child && child.graphics) {
                         if ( bufferChildren.indexOf(child) != -1) {
-                            this.context.drawImage(this.canvasBuffer, child.stageX, child.stageY, child.spriteWidth, child.spriteHeight, child.stageX * this.canvas.scaleFactor, child.stageY * this.canvas.scaleFactor, child.spriteWidth * this.canvas.scaleFactor, child.spriteHeight * this.canvas.scaleFactor);
+                            this.context.drawImage(this.canvasBuffer, child.graphics.stageX, child.graphics.stageY, child.graphics.spriteWidth, child.graphics.spriteHeight, child.graphics.stageX * this.canvas.scaleFactor, child.graphics.stageY * this.canvas.scaleFactor, child.graphics.spriteWidth * this.canvas.scaleFactor, child.graphics.spriteHeight * this.canvas.scaleFactor);
                         } else {
-                            child.draw(this.context);
+                            child.graphics.draw(this.context);
                         }
                     }
                 }
@@ -176,7 +176,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
                 children = sc.getChildren();
                 for (j = 0; j < children.length; j++) {
                     child = children[j];
-                    if (!child || !child.touchable || child.stageX > e.stageX || child.stageY > e.stageY || child.stageX + child.spriteWidth < e.stageX || child.stageY + child.spriteHeight < e.stageY) {
+                    if (!child || !child.graphics.touchable || child.graphics.stageX > e.stageX || child.graphics.stageY > e.stageY || child.graphics.stageX + child.graphics.spriteWidth < e.stageX || child.graphics.stageY + child.graphics.spriteHeight < e.stageY) {
                         continue;
                     }
                     touchedChild = child;
@@ -191,7 +191,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
             e.stageX -= touchedChild.stageX;
             e.stageY -= touchedChild.stageY;
             e.target = touchedChild;
-            touchedChild.entity.dispatch(e.type, e);
+            touchedChild.dispatch(e.type, e);
         };
 
 
