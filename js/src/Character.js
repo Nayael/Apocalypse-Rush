@@ -1,4 +1,4 @@
-var Character = (function(Entity, Keyboard) {
+var Character = (function(Entity, Keyboard, GamepadManager) {
 	'use strict';
 
 	function Character() {
@@ -9,18 +9,21 @@ var Character = (function(Entity, Keyboard) {
 		Entity.constructor.apply(this, arguments);
 
 		this.speed = 1000;
+		
+		// ID of the character is also the gamepad ID
+		this.id = -1;
 	}
 	Character.inheritsFrom(Entity);
 
 	Character.prototype.update = function (dt) {
-		if (Keyboard.isDown(Keyboard.RIGHT_ARROW)) {
+		if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
 			this.x += dt * this.speed;
 		}
-		if (Keyboard.isDown(Keyboard.LEFT_ARROW)) {
+		if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("LEFT"))) {
 			this.x -= dt * this.speed;
 		}
 	}
 
 	return Character;
 
-}(Entity, Keyboard));
+}(Entity, Keyboard, GamepadManager));

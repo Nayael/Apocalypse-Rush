@@ -64,12 +64,12 @@ var InputManager = (function (MakeEventDispatcher) {
         this.addListener(InputEvent.TOUCH_MOVE, _onInputMove, this);
         this.addListener(InputEvent.TOUCH_END, _onInputEnd, this);
 
-
         ////////////////////////
         // PRIVATE ATTRIBUTES //
         ////////////////////////
         var _touchedCanvas = null;
         var _clickTimeout = 0;
+        var _gamepads = [];
 
         
         ////////////////////////////////////////////////////////
