@@ -69,8 +69,22 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			activity: this
 		});
 
+		this._circle = {
+			x: 100,
+			y: 100,
+			radius: 10
+		};
+
 		this._screen.addChild(this._map.graphics);
 	};
+
+	GameActivity.prototype.update = function (dt) {
+		Activity.prototype.update.call(this, dt);
+
+		if (this._map) {
+			this._map.checkCollision(this._circle);
+		}
+	}
 
 	return GameActivity;
 

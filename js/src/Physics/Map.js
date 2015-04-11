@@ -9,8 +9,10 @@ var Map = (function(Entity) {
 		
 		Entity.constructor.apply(this, params);
 
+		this.activity = params.activity;
+
 		this.canvasBuffer = document.createElement('canvas');
-        this.canvasBuffer.scaleFactor = params.activity.application._stage.canvas.scaleFactor;
+        this.canvasBuffer.scaleFactor = this.activity.application._stage.canvas.scaleFactor;
         this.canvasBuffer.width    = Consts.SCREEN_WIDTH;
         this.canvasBuffer.height   = Consts.SCREEN_HEIGHT;
         this.context = this.canvasBuffer.getContext('2d');
@@ -30,7 +32,7 @@ var Map = (function(Entity) {
         }
 
         this.loadBlocks(levelPatterns[0]);
-        this.loadBlocks(levelPatterns[0]);
+        this.loadBlocks(levelPatterns[1]);
         this.loadBlocks(levelPatterns[0]);
 	}
 
@@ -65,7 +67,74 @@ var Map = (function(Entity) {
 	};
 
 	Map.prototype.checkCollision = function (circle) {
-		
+		circle.y = 120;
+		circle.x = 190;
+		circle.radius = 50;
+		var ctx = this.activity.application._stage.context;
+		var scaleFactor = this.activity.application._stage.canvas.scaleFactor;
+		// console.log(scaleFactor);
+
+		ctx.beginPath();
+		ctx.arc(circle.x * scaleFactor, circle.y * scaleFactor, circle.radius * scaleFactor, 0, Math.PI * 2);
+		ctx.stroke();
+
+		var minX = (circle.x - circle.radius) - (circle.x - circle.radius) % Consts.BLOCK_SIZE;
+		var maxX = (circle.x + circle.radius) - (circle.x + circle.radius) % Consts.BLOCK_SIZE;
+		var minY = (circle.y - circle.radius) - (circle.y - circle.radius) % Consts.BLOCK_SIZE;
+		var maxY = (circle.y + circle.radius) - (circle.y + circle.radius) % Consts.BLOCK_SIZE;
+		var j, point, collisionPoint = null;
+		var collisionInfo;
+
+		// console.log(minX, maxX, minY, maxY);
+
+		for (var i = minX; i <= maxX; i += Consts.BLOCK_SIZE) {
+			for (j = minY; j <= maxY; j += Consts.BLOCK_SIZE) {
+				if (this._blocks[i / Consts.BLOCK_SIZE][j / Consts.BLOCK_SIZE] != 0) {
+					point = this.getClosestPoint(circle, i, j);
+
+					collisionInfo = this.circleCollidesPoint(circle, point);
+
+					if (collisionPoint == null || collisionInfo.dist < collisionPoint.dist) {
+						collisionPoint = point;
+						collisionPoint.dist = collisionInfo.dist;
+					}
+					// console.log(collisionInfo);
+					// console.log(point);
+				}
+			}
+		}
+
+		// console.log(collisionPoint);
+
+		return collisionPoint;
+
+		// debugger;
+	};
+
+	Map.prototype.getClosestPoint = function (circle, x, y) {
+		var closestX = circle.x;
+		var closestY = circle.y;
+
+		if (circle.x < x) {
+			closestX = x;
+		}
+		else if (circle.x > x + Consts.BLOCK_SIZE) {
+			closestX = x + Consts.BLOCK_SIZE;
+		}
+
+		if (circle.y < y) {
+			closestY = y;
+		}
+		else if (circle.y > y + Consts.BLOCK_SIZE) {
+			closestY = y + Consts.BLOCK_SIZE;
+		}
+
+		return {x: closestX, y: closestY};
+	};
+
+	Map.prototype.circleCollidesPoint = function (circle, point) {
+		return {collides: ((circle.x - point.x) * (circle.x - point.x) + (circle.y - point.y) * (circle.y - point.y) < circle.radius * circle.radius),
+				dist: (circle.x - point.x) * (circle.x - point.x) + (circle.y - point.y) * (circle.y - point.y)};
 	};
 
 	return Map;
