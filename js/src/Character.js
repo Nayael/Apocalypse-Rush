@@ -27,13 +27,14 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			y: 0
 		};
 
-		this.sprites = params.sprites
-		this.graphics = new Graphics(this, {
-			spritesheet: params.sprites.idle_r,
-			width: params.spriteWidth,
-			height: params.spriteHeight
-		});
-		this.graphics.localX = -this.graphics.spriteWidth / 2;
+		this.sprites = params.sprites;
+		this.handleAnim();
+		// this.graphics = new Graphics(this, {
+		// 	spritesheet: params.sprites.idle_r,
+		// 	width: params.spriteWidth,
+		// 	height: params.spriteHeight
+		// });
+		// this.graphics.localX = -this.graphics.spriteWidth / 2;
 	}
 	Character.inheritsFrom(Entity);
 
@@ -101,9 +102,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.removeFlag("running");
 
 			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
-			var joystickMove = curJoystickVal - this.joystickVal;
+			var joystickMove = curJoystickVal - this.joystickVal;	
 			if (joystickMove != 0) {
-				this.move.x += joystickMove;
 				this.addFlag("running");
 			}
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
@@ -115,17 +115,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				--this.move.x;
 				this.addFlag("running");
 			}
-			this.joystickVal = curJoystickVal;
-
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("UP"))) {
-				--this.move.y;
-				this.addFlag("running");
+			if (curJoystickVal > 0.5 || curJoystickVal < -0.5) {
+				this.move.x = curJoystickVal;
 			}
 
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("DOWN"))) {
-				++this.move.y;
-				this.addFlag("running");
-			}
 		}
 
 		if (this.hasFlag("canJump")) {
@@ -143,30 +136,37 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		var spritesheet = null;
 		if (this.hasFlag('running') && !this.hasFlag('jumping')) {
 			spritesheet = this.sprites[this.xSpeed < 0 ? "run_l" : "run_r"];
-			if (this.graphics.spritesheet != spritesheet) {
+			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
-					localY: -20,
-					width: 86,
+					width: 85,
 					height: 105,
+					localX: -43,
+					localY: -20,
 					animated: true,
 					frameRate: 150,
 					totalFrames: 4
 				});
 			}
 		} else if (!this.hasFlag('running') && !this.hasFlag('jumping') && !this.hasFlag('shooting')){
-			spritesheet = this.sprites[this.xSpeed < 0 ? "run_l" : "run_r"];
-			// if (this.graphics.spritesheet != spritesheet) {
-			// 	this.graphics = new Graphics(this, {
-			// 		spritesheet: spritesheet,
-			// 		localY: -20,
-			// 		width: 86,
-			// 		height: 105,
-			// 		animated: true,
-			// 		frameRate: 150,
-			// 		totalFrames: 4
-			// 	});
-			// }
+			spritesheet = this.sprites[this.xSpeed < 0 ? "idle_l" : "idle_r"];
+			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
+				this.graphics = new Graphics(this, {
+					spritesheet: spritesheet,
+					localY: -20,
+					width: 70,
+					height: 105,
+				});
+			}
+		} else if (this.hasFlag('jumping')) {
+			spritesheet = this.sprites[this.xSpeed < 0 ? "jump_l" : "jump_r"];
+			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
+				this.graphics = new Graphics(this, {
+					spritesheet: spritesheet,
+					width: 70,
+					height: 105
+				});
+			}
 		}
 	}
 

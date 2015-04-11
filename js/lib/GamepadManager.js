@@ -26,10 +26,10 @@ var GamepadManager = (function(MakeEventDispatcher) {
 	////////////
 	// STATIC ATTRIBUTES
 	//
-	GamepadEvent.BUTTON_DOWN = "GamepadEvent.BUTTON_DOWN";
+	GamepadEvent.BUTTON_DOWN    = "GamepadEvent.BUTTON_DOWN";
 	GamepadEvent.BUTTON_PRESSED = "GamepadEvent.BUTTON_PRESSED";
-	GamepadEvent.BUTTON_UP = "GamepadEvent.BUTTON_UP";
-	GamepadEvent.JOYSTICK = "GamepadEvent.JOYSTICK";
+	GamepadEvent.BUTTON_UP      = "GamepadEvent.BUTTON_UP";
+	GamepadEvent.JOYSTICK       = "GamepadEvent.JOYSTICK";
 
 	var Controller = (function() {
 		'use strict';
