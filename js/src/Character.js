@@ -181,10 +181,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
-					width: 85,
-					height: 105,
-					localX: -43,
-					localY: -20,
+					localX: this.faceRight ? 30 : 2,
+					localY: 20,
+					width: 42,
+					height: 52,
 					animated: true,
 					frameRate: 150,
 					totalFrames: 4
@@ -195,9 +195,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
-					localY: -20,
-					width: 70,
-					height: 105,
+					localX: this.faceRight ? 25 : 15,
+					localY: 20,
+					width: 35,
+					height: 52,
 				});
 			}
 		} else if (this.hasFlag('jumping')) {
@@ -205,8 +206,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
-					width: 70,
-					height: 105
+					localX: this.faceRight ? 25 : 15,
+					localY: 20,
+					width: 35,
+					height: 52
 				});
 			}
 		}
@@ -217,10 +220,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 					if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 						this.graphics = new Graphics(this, {
 							spritesheet: spritesheet,
-							width: 85,
-							height: 105,
-							localX: -43,
-							localY: -20,
+							width: 52,
+							height: 52,
+							// localX: -43,
+							// localY: -20,
 							animated: true,
 							frameRate: 150,
 							totalFrames: 4
@@ -231,9 +234,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 					if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 						this.graphics = new Graphics(this, {
 							spritesheet: spritesheet,
-							localY: -20,
-							width: 70,
-							height: 105,
+							localX: this.faceRight ? 30 : 10,
+							localY: 20,
+							width: 35,
+							height: 52,
 						});
 					}
 				}
@@ -242,8 +246,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 					this.graphics = new Graphics(this, {
 						spritesheet: spritesheet,
-						width: 70,
-						height: 105
+						localX: this.faceRight ? 30 : 10,
+						localY: 20,
+						width: 35,
+						height: 52
 					});
 				}
 			}
@@ -289,8 +295,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		var angle = collisionPoint.angle;
 		var tempAngle = Math.atan2(this.previousY - this.y, this.previousX - this.x);
 
-		this.x += Math.cos(angle) * (30 - collisionPoint.dist + (this.onTheGround ? -1 : 0));
-		this.y += Math.sin(angle) * (30 - collisionPoint.dist + (this.onTheGround ? -1 : 0));
+		this.x += Math.cos(angle) * (Consts.CHARACTER_RADIUS - collisionPoint.dist + (this.onTheGround ? -1 : 0));
+		this.y += Math.sin(angle) * (Consts.CHARACTER_RADIUS - collisionPoint.dist + (this.onTheGround ? -1 : 0));
 
 		angle -= tempAngle - angle;
 
@@ -314,8 +320,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.isCooldown = true;
 		var bullet = this.getBullet();
 		bullet.direction = this.faceRight ? 1 : -1;
-		bullet.x = this.x + (this.faceRight ? 50 : -50);
-		bullet.y = this.y + 30;
+		bullet.x = this.x + this.width / 2 + (this.faceRight ? 50 : -50);
+		bullet.y = this.y + this.height * .4;
 		bullet.init(this.id);
 		window.gameActivity._entities.push(bullet);
 		window.gameActivity.getScreen().addChild(bullet);
