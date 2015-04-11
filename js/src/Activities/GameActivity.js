@@ -10,6 +10,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 		this._assets = {};
 		this._players = [];
+		this.bullets = [];
 	}
 	GameActivity.inheritsFrom(Activity);
 
@@ -76,6 +77,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 		this.checkPlayersCollisionWithMap(dt);
 		this._map.checkCameraOffset();
+		this.checkCollideWithPlayers();
 	}
 
 	GameActivity.prototype.checkPlayersCollisionWithMap = function (dt) {
@@ -99,6 +101,26 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			// }
 
 			// console.log(collisionPoint);
+		}
+	}
+
+	GameActivity.prototype.checkCollideWithPlayers = function () {
+		var bullet, player, playerX, playerY;
+		for (var i = 0; i < this.bullets.length; i++) {
+			bullet = this.bullets[i];
+			for (var j = 0; j < this._players.length; j++) {
+				player = this._players[j];
+
+				if (bullet.owner != player.id) {
+					playerX = player.x + player.width / 2;
+					playerY = player.y + player.height / 2;
+					if ((bullet.x - playerX) * (bullet.x - playerX) + (bullet.y - playerY) * (bullet.y - playerY) < ((bullet.radius + 30) * (bullet.radius + 30))) {
+						bullet.die();
+						player.die();
+						break;
+					}
+				}
+			}
 		}
 	}
 

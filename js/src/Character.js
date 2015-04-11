@@ -21,7 +21,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 		this.faceRight = true;
 		this.bullets = [];
-		this.shootCooldown = 0.5;
+		this.shootCooldown = 0.25;
 		this.shootCooldownValue = 0;
 		this.isCooldown = false;
 
@@ -184,6 +184,44 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				});
 			}
 		}
+		if (this.hasFlag('shooting')) {
+			if (this.onTheGround) {
+				if (this.move.x != 0) {
+					spritesheet = this.sprites[this.faceRight ? "run_r" : "run_l"];
+					if (!this.graphics || this.graphics.spritesheet != spritesheet) {
+						this.graphics = new Graphics(this, {
+							spritesheet: spritesheet,
+							width: 85,
+							height: 105,
+							localX: -43,
+							localY: -20,
+							animated: true,
+							frameRate: 150,
+							totalFrames: 4
+						});
+					}
+				} else {
+					spritesheet = this.sprites[this.faceRight ? "idle_r" : "idle_l"];
+					if (!this.graphics || this.graphics.spritesheet != spritesheet) {
+						this.graphics = new Graphics(this, {
+							spritesheet: spritesheet,
+							localY: -20,
+							width: 70,
+							height: 105,
+						});
+					}
+				}
+			} else {
+				spritesheet = this.sprites[this.faceRight ? "jump_r" : "jump_l"];
+				if (!this.graphics || this.graphics.spritesheet != spritesheet) {
+					this.graphics = new Graphics(this, {
+						spritesheet: spritesheet,
+						width: 70,
+						height: 105
+					});
+				}
+			}
+		}
 	}
 
 	Character.prototype.applyMove = function (dt) {
@@ -250,20 +288,21 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.isCooldown = true;
 		var bullet = this.getBullet();
 		bullet.direction = this.faceRight ? 1 : -1;
-		bullet.x = this.x + 30;
-		bullet.y = this.y + 10;
-		bullet.init();
+		bullet.x = this.x + (this.faceRight ? 50 : -50);
+		bullet.y = this.y + 30;
+		bullet.init(this.id);
 		window.gameActivity._entities.push(bullet);
 		window.gameActivity.getScreen().addChild(bullet);
 	}
 
 	Character.prototype.getBullet = function () {
 		if (window.bulletsPool.length == 0) {
-			return new Bullet();
+			return new Bullet({
+				owner: this.id
+			});
 		}
 		return window.bulletsPool.splice(0, 1)[0];
 	}
-
 
 	return Character;
 
