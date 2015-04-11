@@ -32,7 +32,7 @@ var Map = (function(Entity) {
         }
 
         this.loadBlocks(levelPatterns[0]);
-        this.loadBlocks(levelPatterns[1]);
+        this.loadBlocks(levelPatterns[0]);
         this.loadBlocks(levelPatterns[0]);
 	}
 
@@ -67,9 +67,10 @@ var Map = (function(Entity) {
 	};
 
 	Map.prototype.checkCollision = function (circle) {
-		circle.y = 120;
-		circle.x = 190;
-		circle.radius = 50;
+		// console.log(circle);
+		// circle.y = 120;
+		// circle.x = 190;
+		// circle.radius = 50;
 		var ctx = this.activity.application._stage.context;
 		var scaleFactor = this.activity.application._stage.canvas.scaleFactor;
 		// console.log(scaleFactor);
@@ -85,18 +86,32 @@ var Map = (function(Entity) {
 		var j, point, collisionPoint = null;
 		var collisionInfo;
 
+		if (minX < 0) {
+			minX = 0;
+		}
+		if (maxX > (this._blocks[0].length - 1) * Consts.BLOCK_SIZE) {
+			maxX = (this._blocks[0].length - 1) * Consts.BLOCK_SIZE;
+		}
+		if (minY < 0) {
+			minY = 0;
+		}
+		if (maxY > (this._blocks.length - 1) * Consts.BLOCK_SIZE) {
+			maxY = (this._blocks.length - 1) * Consts.BLOCK_SIZE;
+		}
+
 		// console.log(minX, maxX, minY, maxY);
 
 		for (var i = minX; i <= maxX; i += Consts.BLOCK_SIZE) {
 			for (j = minY; j <= maxY; j += Consts.BLOCK_SIZE) {
-				if (this._blocks[i / Consts.BLOCK_SIZE][j / Consts.BLOCK_SIZE] != 0) {
+				if (this._blocks[j / Consts.BLOCK_SIZE][i / Consts.BLOCK_SIZE] != 0) {
 					point = this.getClosestPoint(circle, i, j);
 
 					collisionInfo = this.circleCollidesPoint(circle, point);
 
-					if (collisionPoint == null || collisionInfo.dist < collisionPoint.dist) {
+					if ((collisionPoint == null || collisionInfo.dist < collisionPoint.dist) && collisionInfo.collides) {
 						collisionPoint = point;
 						collisionPoint.dist = collisionInfo.dist;
+						collisionPoint.angle = collisionInfo.angle;
 					}
 					// console.log(collisionInfo);
 					// console.log(point);
@@ -134,7 +149,8 @@ var Map = (function(Entity) {
 
 	Map.prototype.circleCollidesPoint = function (circle, point) {
 		return {collides: ((circle.x - point.x) * (circle.x - point.x) + (circle.y - point.y) * (circle.y - point.y) < circle.radius * circle.radius),
-				dist: (circle.x - point.x) * (circle.x - point.x) + (circle.y - point.y) * (circle.y - point.y)};
+				dist: Math.sqrt((circle.x - point.x) * (circle.x - point.x) + (circle.y - point.y) * (circle.y - point.y)),
+				angle: Math.atan2(circle.y - point.y, circle.x - point.x)};
 	};
 
 	return Map;

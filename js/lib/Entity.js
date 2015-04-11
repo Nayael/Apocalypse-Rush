@@ -13,6 +13,9 @@ var Entity = (function(MakeEventDispatcher) {
         this.name = null;
 
 		if (params) {
+			this.width = params.width;
+			this.height = params.height;
+
 			if (params.graphics) {
 				this.graphics = params.graphics;
 				this.graphics.entity = this;

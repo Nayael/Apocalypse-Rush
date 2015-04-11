@@ -62,7 +62,9 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 					right: this._assets.cat_right.img
 				},
 				width: 36,
-				height: 36
+				height: 36,
+				spriteWidth: 36,
+				spriteHeight: 36
 			});
 			character.x = 100 + i * 10;
 			this._entities.push(character);
@@ -91,8 +93,30 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	GameActivity.prototype.update = function (dt) {
 		Activity.prototype.update.call(this, dt);
 
-		if (this._map) {
-			this._map.checkCollision(this._circle);
+		this.checkPlayersCollisionWithMap(dt);
+	}
+
+	GameActivity.prototype.checkPlayersCollisionWithMap = function (dt) {
+		if (!this._map) {
+			return;
+		}
+
+		var collisionPoint;
+
+		for (var i = this._players.length; i--;) {
+			// console.log(this._players[i]);
+			// debugger;
+			collisionPoint = this._map.checkCollision({
+				x: this._players[i].x + this._players[i].width / 2,
+				y: this._players[i].y + this._players[i].height / 2,
+				radius: 30
+			});
+
+			// if (collisionPoint != null) {
+				this._players[i].handleCollision(collisionPoint);
+			// }
+
+			// console.log(collisionPoint);
 		}
 	}
 
