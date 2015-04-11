@@ -36,7 +36,9 @@ var assets = (function() {
             "player_3-jump_l": ["assets/textures/characters/3/jump_l.png", 'game'],
             "player_3-jump_r": ["assets/textures/characters/3/jump_r.png", 'game'],
             "player_3-run_l": ["assets/textures/characters/3/run_l.png", 'game'],
-            "player_3-run_r": ["assets/textures/characters/3/run_r.png", 'game']
+            "player_3-run_r": ["assets/textures/characters/3/run_r.png", 'game'],
+            "texture_tiles": ["assets/textures/Tiles.png", 'game']
+
         },
         "atlases": {
             // "young_woman": ["assets/textures/game/characters/young_woman", "game"]
