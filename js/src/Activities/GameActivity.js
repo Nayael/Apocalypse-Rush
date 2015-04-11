@@ -66,6 +66,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			});
 			character.x = 100 + i * 10;
 			this._entities.push(character);
+			this._players.push(character);
 
 			this._screen.addChild(character.graphics);
 
