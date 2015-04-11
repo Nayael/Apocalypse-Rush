@@ -15,7 +15,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.xSpeed = 0;
 		this.ySpeed = 0;
 		this.xForce = 0;
-		this.yForce = 500;
+		this.yForce = 1500;
 		this.onTheGround = false;
 
 		// ID of the character is also the gamepad ID
@@ -177,11 +177,11 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.xSpeed = 0;
 
 		this.xSpeed += diffX;
-		if (this.xSpeed > 1500) {
-			this.xSpeed = 1500;
+		if (this.xSpeed > 500) {
+			this.xSpeed = 500;
 		}
-		if (this.xSpeed < -1500) {
-			this.xSpeed = -1500;
+		if (this.xSpeed < -500) {
+			this.xSpeed = -500;
 		}
 		if (this.move.x == 0) {
 			this.xSpeed *= .8 + .1 * dt;
@@ -190,7 +190,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 	}
 
 	Character.prototype.jump = function () {
-		this.ySpeed = -400;
+		this.ySpeed = -800;
 	}
 
 	Character.prototype.handleCollision = function (collisionPoint) {

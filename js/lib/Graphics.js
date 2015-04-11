@@ -59,10 +59,25 @@ var Graphics = (function (MakeEventDispatcher) {
         
         if (this.spritesheet) {
             if (this.isCanvas) {
-                context.drawImage(this.spritesheet, this.sourceX, this.sourceY, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
+                context.drawImage(  this.spritesheet,
+                                    this.sourceX,
+                                    this.sourceY,
+                                    this.spriteWidth,
+                                    this.spriteHeight,
+                                    this.stageX * context.canvas.scaleFactor,
+                                    this.stageY * context.canvas.scaleFactor,
+                                    this.spriteWidth * context.canvas.scaleFactor,
+                                    this.spriteHeight * context.canvas.scaleFactor);
             } else {
-                console.log('this.spriteHeight: ', this.spriteHeight);
-                context.drawImage(this.spritesheet, this.spriteWidth * this.currentFrame, 0, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
+                context.drawImage(  this.spritesheet,
+                                    this.spriteWidth * this.currentFrame,
+                                    0,
+                                    this.spriteWidth,
+                                    this.spriteHeight,
+                                    (this.stageX - (window.gameActivity ? gameActivity._map.cameraOffset : 0)) * context.canvas.scaleFactor,
+                                    this.stageY * context.canvas.scaleFactor,
+                                    this.spriteWidth * context.canvas.scaleFactor,
+                                    this.spriteHeight * context.canvas.scaleFactor);
 
                 if (this.animated === false || this.totalFrames == 1) {
                     return;

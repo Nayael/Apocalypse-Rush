@@ -75,6 +75,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		Activity.prototype.update.call(this, dt);
 
 		this.checkPlayersCollisionWithMap(dt);
+		this._map.checkCameraOffset();
 	}
 
 	GameActivity.prototype.checkPlayersCollisionWithMap = function (dt) {

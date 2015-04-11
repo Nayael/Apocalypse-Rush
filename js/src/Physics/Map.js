@@ -7,17 +7,17 @@ var Map = (function(Entity) {
 			return new Map(params);
 		}
 		
-		Entity.constructor.apply(this, params);
+		Entity.apply(this, arguments);
 
 		this.activity = params.activity;
 
 		this.canvasBuffer = document.createElement('canvas');
         this.canvasBuffer.scaleFactor = this.activity.application._stage.canvas.scaleFactor;
-        this.canvasBuffer.width    = Consts.SCREEN_WIDTH;
+        this.canvasBuffer.width    = 8192;
         this.canvasBuffer.height   = Consts.SCREEN_HEIGHT;
         this.context = this.canvasBuffer.getContext('2d');
 
-        // this.context.fillRect(0, 0, this.canvasBuffer.width, this.canvasBuffer.height);
+		this.textureTiles = AssetManager.instance.assets.images["texture_tiles"];
 
 		this.graphics = new Graphics(this, {
 			spritesheet: this.canvasBuffer,
@@ -26,17 +26,38 @@ var Map = (function(Entity) {
 			isCanvas: true
 		});
 
+		this.cameraOffset = 0;
+
         this._blocks = [];
         for (var i = 0; i < Consts.SCREEN_HEIGHT / Consts.BLOCK_SIZE; i++) {
         	this._blocks.push([]);
         }
 
         this.loadBlocks(levelPatterns[0]);
-        this.loadBlocks(levelPatterns[0]);
-        this.loadBlocks(levelPatterns[0]);
 	}
 
 	Map.inheritsFrom(Entity);
+
+	Map.prototype.checkCameraOffset = function () {
+		var minX = this.activity._players[0].x, maxX = minX;
+
+		for (var i = 1; i < this.activity._players.length; i++) {
+			if (minX > this.activity._players[i].x) {
+				minX = this.activity._players[i].x;
+			}
+			else if (maxX < this.activity._players[i].x) {
+				maxX = this.activity._players[i].x;
+			}
+		}
+
+		minX -= 100;
+
+		if (minX > this.cameraOffset) {
+			this.cameraOffset = minX;
+		}
+
+		this.graphics.sourceX = this.cameraOffset;
+	}
 
 	Map.prototype.loadBlocks = function (pattern) {
 		for (var i = 0; i < pattern.length; i++) {
@@ -53,14 +74,24 @@ var Map = (function(Entity) {
 		for (var i = 0; i < this._blocks.length; i++) {
 			for (var j = 0; j < this._blocks[i].length; j++) {
 				if (this._blocks[i][j]) {
-					this.context.strokeRect(j * Consts.BLOCK_SIZE,
+					this.context.drawImage(	this.textureTiles,
+											(this._blocks[i][j] - 1) * Consts.BLOCK_SIZE,
+											0,
+											Consts.BLOCK_SIZE,
+											Consts.BLOCK_SIZE,
+											j * Consts.BLOCK_SIZE,
 											i * Consts.BLOCK_SIZE,
 											Consts.BLOCK_SIZE,
 											Consts.BLOCK_SIZE);
-					this.context.fillRect(j * Consts.BLOCK_SIZE,
-											i * Consts.BLOCK_SIZE,
-											Consts.BLOCK_SIZE,
-											Consts.BLOCK_SIZE);
+
+					// this.context.strokeRect(j * Consts.BLOCK_SIZE,
+					// 						i * Consts.BLOCK_SIZE,
+					// 						Consts.BLOCK_SIZE,
+					// 						Consts.BLOCK_SIZE);
+					// this.context.fillRect(j * Consts.BLOCK_SIZE,
+					// 						i * Consts.BLOCK_SIZE,
+					// 						Consts.BLOCK_SIZE,
+					// 						Consts.BLOCK_SIZE);
 				}
 			}
 		}
@@ -75,9 +106,9 @@ var Map = (function(Entity) {
 		var scaleFactor = this.activity.application._stage.canvas.scaleFactor;
 		// console.log(scaleFactor);
 
-		ctx.beginPath();
-		ctx.arc(circle.x * scaleFactor, circle.y * scaleFactor, circle.radius * scaleFactor, 0, Math.PI * 2);
-		ctx.stroke();
+		// ctx.beginPath();
+		// ctx.arc(circle.x * scaleFactor, circle.y * scaleFactor, circle.radius * scaleFactor, 0, Math.PI * 2);
+		// ctx.stroke();
 
 		var minX = (circle.x - circle.radius) - (circle.x - circle.radius) % Consts.BLOCK_SIZE;
 		var maxX = (circle.x + circle.radius) - (circle.x + circle.radius) % Consts.BLOCK_SIZE;
