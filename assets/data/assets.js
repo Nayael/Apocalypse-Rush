@@ -37,7 +37,15 @@ var assets = (function() {
             "player_3-jump_r": ["assets/textures/characters/3/jump_r.png", 'game'],
             "player_3-run_l": ["assets/textures/characters/3/run_l.png", 'game'],
             "player_3-run_r": ["assets/textures/characters/3/run_r.png", 'game'],
-            "texture_tiles": ["assets/textures/Tiles.png", 'game']
+            "texture_tiles": ["assets/textures/Tiles.png", 'game'],
+            "bombe": ["assets/textures/bombe.png", 'game'],
+            "enemy_left": ["assets/textures/enemies/enemy_left.png", 'game'],
+            "enemy_right": ["assets/textures/enemies/enemy_right.png", 'game'],
+            "general_left": ["assets/textures/enemies/general_left.png", 'game'],
+            "general_right": ["assets/textures/enemies/general_right.png", 'game'],
+            "bloc_tuile": ["assets/textures/blocs/bloc_tuile.png", 'game'],
+            "bloc_muraille": ["assets/textures/blocs/bloc_muraille.png", 'game'],
+            "bloc_muraille_haut": ["assets/textures/blocs/bloc_muraille_haut.png", 'game'],
 
         },
         "atlases": {
