@@ -75,7 +75,15 @@ var Map = (function(Entity) {
 	Map.prototype.loadBlocks = function (pattern) {
 		for (var i = 0; i < pattern.length; i++) {
 			for (var j = 0; j < pattern[i].length; j++) {
-				this._blocks[i].push(pattern[i][j]);
+				if (pattern[i][j] == 1) {
+					window.gameActivity.enemies.push(new Enemy({
+						x: j * Consts.BLOCK_SIZE,
+						y: i * Consts.BLOCK_SIZE
+					}));
+					this._blocks[i].push(0);
+				}
+				else
+					this._blocks[i].push(pattern[i][j]);
 			}
 		}
 
@@ -96,15 +104,6 @@ var Map = (function(Entity) {
 											i * Consts.BLOCK_SIZE,
 											Consts.BLOCK_SIZE,
 											Consts.BLOCK_SIZE);
-
-					// this.context.strokeRect(j * Consts.BLOCK_SIZE,
-					// 						i * Consts.BLOCK_SIZE,
-					// 						Consts.BLOCK_SIZE,
-					// 						Consts.BLOCK_SIZE);
-					// this.context.fillRect(j * Consts.BLOCK_SIZE,
-					// 						i * Consts.BLOCK_SIZE,
-					// 						Consts.BLOCK_SIZE,
-					// 						Consts.BLOCK_SIZE);
 				}
 			}
 		}

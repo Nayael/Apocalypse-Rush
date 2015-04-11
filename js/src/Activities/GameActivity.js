@@ -11,6 +11,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this._assets = {};
 		this._players = [];
 		this.bullets = [];
+		this.enemies = [];
 	}
 	GameActivity.inheritsFrom(Activity);
 
@@ -93,7 +94,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			collisionPoint = this._map.checkCollision({
 				x: this._players[i].x + this._players[i].width / 2,
 				y: this._players[i].y + this._players[i].height / 2,
-				radius: 30
+				radius: Consts.CHARACTER_RADIUS
 			});
 
 			// if (collisionPoint != null) {
@@ -117,7 +118,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 				if (bullet.owner != player.id) {
 					playerX = player.x + player.width / 2;
 					playerY = player.y + player.height / 2;
-					if ((bullet.x - playerX) * (bullet.x - playerX) + (bullet.y - playerY) * (bullet.y - playerY) < ((bullet.radius + 30) * (bullet.radius + 30))) {
+					if ((bullet.x - playerX) * (bullet.x - playerX) + (bullet.y - playerY) * (bullet.y - playerY) < ((bullet.radius + Consts.CHARACTER_RADIUS) * (bullet.radius + Consts.CHARACTER_RADIUS))) {
 						if (bullet.direction == 1) {
 							respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
 						} else {

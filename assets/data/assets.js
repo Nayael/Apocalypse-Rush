@@ -46,7 +46,8 @@ var assets = (function() {
             "bloc_tuile": ["assets/textures/blocs/bloc_tuile.png", 'game'],
             "bloc_muraille": ["assets/textures/blocs/bloc_muraille.png", 'game'],
             "bloc_muraille_haut": ["assets/textures/blocs/bloc_muraille_haut.png", 'game'],
-            "bullet": ["assets/textures/bullet.png", 'game']
+            "bullet": ["assets/textures/bullet.png", 'game'],
+            "enemy": ["assets/textures/enemy.png", 'game']
         },
         "atlases": {
             // "young_woman": ["assets/textures/game/characters/young_woman", "game"]
