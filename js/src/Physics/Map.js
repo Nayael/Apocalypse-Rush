@@ -88,7 +88,7 @@ var Map = (function(Entity) {
 			for (var j = 0; j < this._blocks[i].length; j++) {
 				if (this._blocks[i][j]) {
 					this.context.drawImage(	this.textureTiles,
-											(this._blocks[i][j] - 1) * Consts.BLOCK_SIZE,
+											(this._blocks[i][j] - 2) * Consts.BLOCK_SIZE,
 											0,
 											Consts.BLOCK_SIZE,
 											Consts.BLOCK_SIZE,
