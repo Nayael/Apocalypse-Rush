@@ -9,7 +9,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 		Entity.apply(this, arguments);
 
 		this.radius = 5;
-		this.ttl = 0.5;
+		this.ttl = 2;
 		this.time = 0;
 		this.direction = 1;
 		this.speed = 20;

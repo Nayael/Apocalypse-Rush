@@ -105,7 +105,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 
 	GameActivity.prototype.checkCollideWithPlayers = function () {
-		var bullet, player, playerX, playerY;
+		var bullet, player, playerX, playerY, respawnX;
 		for (var i = 0; i < this.bullets.length; i++) {
 			bullet = this.bullets[i];
 			for (var j = 0; j < this._players.length; j++) {
@@ -115,8 +115,13 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 					playerX = player.x + player.width / 2;
 					playerY = player.y + player.height / 2;
 					if ((bullet.x - playerX) * (bullet.x - playerX) + (bullet.y - playerY) * (bullet.y - playerY) < ((bullet.radius + 30) * (bullet.radius + 30))) {
+						if (bullet.direction == 1) {
+							respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
+						} else {
+							respawnX = player.x + (-250 + Math.floor(Math.random() * 500));
+						}
 						bullet.die();
-						player.die();
+						player.die(respawnX);
 						break;
 					}
 				}
