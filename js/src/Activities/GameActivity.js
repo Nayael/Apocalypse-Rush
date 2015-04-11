@@ -1,4 +1,4 @@
-var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character) {
+var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character) {
 	'use strict';
 
 	function GameActivity(existingEntities) {
@@ -9,56 +9,59 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 		Activity.constructor.apply(this, arguments);
 
 		this._assets = {};
-
-		/**
-		 * At each update, make the character move
-		 */
-		// this.update = function() {
-		// 	if (this._entities.length > 0) {
-		// 		this._entities[0].x++;
-		// 	}
-		// };
 	}
 	GameActivity.inheritsFrom(Activity);
 
 	GameActivity.prototype.init = function() {
 		var loader = new PxLoader();
 
-	    // this time we'll create a PxLoaderImage instance instead of just 
-	    // giving the loader the image url 
-	    this._assets.pxImage = new PxLoaderImage("assets/textures/spritesheet.png"); 
-	 
-	    loader.add(this._assets.pxImage); 
-		 
+		// this time we'll create a PxLoaderImage instance instead of just 
+		// giving the loader the image url 
+		this._assets = {
+			cat_idle_left: new PxLoaderImage("assets/textures/characters/idle_left.png"),
+			cat_idle_right: new PxLoaderImage("assets/textures/characters/idle_right.png"),
+			cat_jump_l: new PxLoaderImage("assets/textures/characters/jump_l.png"),
+			cat_jump_r: new PxLoaderImage("assets/textures/characters/jump_r.png"),
+			cat_left: new PxLoaderImage("assets/textures/characters/left.png"),
+			cat_right: new PxLoaderImage("assets/textures/characters/right.png"),
+		}
+
+		for (var prop in this._assets) {
+			if (this._assets.hasOwnProperty(prop)) {
+				loader.add(this._assets[prop]);
+			}
+		}
+
 		// callback that runs every time an image loads 
-		loader.addProgressListener(function(e) { 
-		    console.log(e.completedCount + ' / ' + e.totalCount); 
+		loader.addProgressListener(function(e) {
+			console.log(e.completedCount + ' / ' + e.totalCount);
 		}.bind(this));
 
 		loader.addCompletionListener(this.onGameLoaded.bind(this));
-		 
+
 		loader.start();
 	};
 
 	GameActivity.prototype.onGameLoaded = function(e) {
 		this.initMap();
 
-		var character = new Character();
-		character.x = 100;
-		character.graphics = new Graphics(character, {
-			spritesheet: this._assets.pxImage.img,
-			width: 41,
-			height: 49,
-			animated: true,
-			totalFrames: 8,
-			frameRate: 150
+		var character = new Character({
+			sprites: {
+				idle_left: this._assets.cat_idle_left.img,
+				idle_right: this._assets.cat_idle_right.img,
+				jump_l: this._assets.cat_jump_l.img,
+				jump_r: this._assets.cat_jump_r.img,
+				left: this._assets.cat_left.img,
+				right: this._assets.cat_right.img
+			},
+			width: 36,
+			height: 36
 		});
-		character.graphics.localX = -character.graphics.spriteWidth / 2;
 		this._entities.push(character);
 
 		this._screen.addChild(character.graphics);
 
-		character.addListener(InputManager.InputEvent.TOUCH_CLICKED, this.onTouch, this);
+		character.takeControl(0);
 	};
 
 	GameActivity.prototype.initMap = function() {
@@ -67,10 +70,6 @@ var GameActivity = (function (Activity, PxLoader, PxLoaderImage, Entity, Graphic
 		});
 
 		this._screen.addChild(this._map.graphics);
-	};
-
-	GameActivity.prototype.onTouch = function(e) {
-		console.log(e);
 	};
 
 	return GameActivity;

@@ -57,22 +57,24 @@ var Graphics = (function (MakeEventDispatcher) {
         this.stageX = this.localX + ( (this.entity.x ? this.entity.x : 0) + 0.5 ) | 0;
         this.stageY = this.localY + ( (this.entity.y ? this.entity.y : 0) + 0.5 ) | 0;
         
-        if (this.isCanvas) {
-            context.drawImage(this.spritesheet, this.sourceX, this.sourceY, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
-        } else {
-            context.drawImage(this.spritesheet, this.spriteWidth * this.currentFrame, 0, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
+        if (this.spritesheet) {
+            if (this.isCanvas) {
+                context.drawImage(this.spritesheet, this.sourceX, this.sourceY, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
+            } else {
+                context.drawImage(this.spritesheet, this.spriteWidth * this.currentFrame, 0, this.spriteWidth, this.spriteHeight, this.stageX * context.canvas.scaleFactor, this.stageY * context.canvas.scaleFactor, this.spriteWidth * context.canvas.scaleFactor, this.spriteHeight * context.canvas.scaleFactor);
 
-            if (this.animated === false || this.totalFrames == 1) {
-                return;
-            }
-            this.frameCount++;
+                if (this.animated === false || this.totalFrames == 1) {
+                    return;
+                }
+                this.frameCount++;
 
-            if (this.frameCount % ( (1000 / (this.frameRate) ) | 0) == 0) {
-                this.currentFrame++;
-            }
-            
-            if (this.currentFrame >= (this.totalFrames - 1)) {   // Go back to the first frame
-                this.currentFrame = 0;
+                if (this.frameCount % ( (1000 / (this.frameRate) ) | 0) == 0) {
+                    this.currentFrame++;
+                }
+                
+                if (this.currentFrame >= (this.totalFrames - 1)) {   // Go back to the first frame
+                    this.currentFrame = 0;
+                }
             }
         }
     };
