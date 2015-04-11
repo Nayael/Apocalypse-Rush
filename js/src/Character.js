@@ -1,6 +1,7 @@
 var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphics) {
 	'use strict';
 
+	window.bulletsPool = [];
 	function Character(params) {
 		// enforces new
 		if (!(this instanceof Character)) {
@@ -18,6 +19,12 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.yForce = 1500;
 		this.onTheGround = false;
 
+		this.faceRight = true;
+		this.bullets = [];
+		this.shootCooldown = 0.5;
+		this.shootCooldownValue = 0;
+		this.isCooldown = false;
+
 		// ID of the character is also the gamepad ID
 		this.id = -1;
 		this.flags = [];
@@ -29,12 +36,6 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 		this.sprites = params.sprites;
 		this.handleAnim();
-		// this.graphics = new Graphics(this, {
-		// 	spritesheet: params.sprites.idle_r,
-		// 	width: params.spriteWidth,
-		// 	height: params.spriteHeight
-		// });
-		// this.graphics.localX = -this.graphics.spriteWidth / 2;
 	}
 	Character.inheritsFrom(Entity);
 
@@ -86,6 +87,15 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.move.x = 0;
 		this.move.y = 0;
 
+		// Cooldown
+		if (this.isCooldown) {
+			this.shootCooldownValue	+= dt;
+		}
+		if (this.shootCooldownValue >= this.shootCooldown) {
+			this.shootCooldownValue = 0;
+			this.isCooldown = false;
+		}
+
 		if (this.id != -1) {
 			this.handleControls(dt);
 		}
@@ -116,7 +126,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.removeFlag("running");
 
 			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
-			var joystickMove = curJoystickVal - this.joystickVal;	
+			var joystickMove = curJoystickVal - this.joystickVal;
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
 				++this.move.x;
 				this.addFlag("running");
@@ -126,6 +136,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				--this.move.x;
 				this.addFlag("running");
 			}
+
 			if (curJoystickVal > 0.5 || curJoystickVal < -0.5) {
 				this.addFlag("running");
 				this.move.x = curJoystickVal;
@@ -139,7 +150,14 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 					this.addFlag("jumping");
 				}
 			}
+		}
 
+		if (this.hasFlag("canShoot")) {
+			this.removeFlag("shooting");
+			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("X"))) {
+				this.shoot();
+				this.addFlag("shooting");
+			}
 		}
 	}
 
@@ -147,7 +165,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		var graphics = null;
 		var spritesheet = null;
 		if (this.hasFlag('running') && !this.hasFlag('jumping')) {
-			spritesheet = this.sprites[this.xSpeed < 0 ? "run_l" : "run_r"];
+			spritesheet = this.sprites[this.faceRight ? "run_r" : "run_l"];
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
@@ -161,7 +179,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				});
 			}
 		} else if (!this.hasFlag('running') && !this.hasFlag('jumping') && !this.hasFlag('shooting')){
-			spritesheet = this.sprites[this.xSpeed < 0 ? "idle_l" : "idle_r"];
+			spritesheet = this.sprites[this.faceRight ? "idle_r" : "idle_l"];
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
@@ -171,7 +189,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 				});
 			}
 		} else if (this.hasFlag('jumping')) {
-			spritesheet = this.sprites[this.xSpeed < 0 ? "jump_l" : "jump_r"];
+			spritesheet = this.sprites[this.faceRight ? "jump_r" : "jump_l"];
 			if (!this.graphics || this.graphics.spritesheet != spritesheet) {
 				this.graphics = new Graphics(this, {
 					spritesheet: spritesheet,
@@ -184,6 +202,12 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 	Character.prototype.applyMove = function (dt) {
 		var diffX = this.move.x * dt * this.speed;
+
+		if (this.move.x > 0) {
+			this.faceRight = true;
+		} else if (this.move.x < 0) {
+			this.faceRight = false;
+		}
 
 		if ((this.xSpeed < 0 && this.move.x > 0) || (this.xSpeed > 0 && this.move.x < 0))
 			this.xSpeed = 0;
@@ -231,6 +255,27 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.addFlag("canJump");
 			this.onTheGround = true;
 		}
+	}
+
+	Character.prototype.shoot = function () {
+		if (this.isCooldown) {
+			return;
+		}
+		this.isCooldown = true;
+		var bullet = this.getBullet();
+		bullet.direction = this.faceRight ? 1 : -1;
+		bullet.x = this.x + 30;
+		bullet.y = this.y + 10;
+		bullet.init();
+		window.gameActivity._entities.push(bullet);
+		window.gameActivity.getScreen().addChild(bullet);
+	}
+
+	Character.prototype.getBullet = function () {
+		if (window.bulletsPool.length == 0) {
+			return new Bullet();
+		}
+		return window.bulletsPool.splice(0, 1)[0];
 	}
 
 
