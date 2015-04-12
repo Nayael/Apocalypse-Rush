@@ -1,12 +1,18 @@
 * {
     -ms-touch-action: none;
     overflow: hidden;
-    background-color: #000000;
     margin: 0px;
     padding: 0px;
-	text-align: center;
+	/*text-align: center;*/
+}
+
+html, body {
+    background-color: #000000;
 }
 
 canvas{
+	position: absolute;
+	left: 0;
+	top: 0;
 	display: inline-block;
 }

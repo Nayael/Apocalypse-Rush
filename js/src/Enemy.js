@@ -63,7 +63,7 @@ var Enemy = (function(Entity, Graphics) {
 		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
 		window.gameActivity.getScreen().removeChild(this);
 		if (killer) {
-			killer.points += 2;
+			killer.addPoints(2);
 		}
 	}
 

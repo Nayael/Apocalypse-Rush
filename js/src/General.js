@@ -64,7 +64,7 @@ var General = (function(Entity, Graphics) {
 		if (this.hp <= 0) {
 			window.gameActivity.onGeneralDead();
 			if (killer) {
-				killer.points += 15;
+				killer.addPoints(15);
 			}
 			window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
 			window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);

@@ -1,4 +1,4 @@
-var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb) {
+var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb, Consts, UI) {
 	'use strict';
 
 	function GameActivity(params) {
@@ -25,6 +25,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	};
 
 	GameActivity.prototype.launchGame = function() {
+		this.ui = new UI(this._players.length);
 		this.bomb = new Bomb();
 		this._entities.push(this.bomb);
 
@@ -84,6 +85,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this.checkPlayersCollisionWithMap(dt);
 		this._map.checkCameraOffset();
 		this.checkCollideWithPlayers();
+
 	}
 
 	GameActivity.prototype.checkPlayersCollisionWithMap = function (dt) {
@@ -187,4 +189,4 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	return GameActivity;
 
-}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb));
+}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb, Consts, UI));

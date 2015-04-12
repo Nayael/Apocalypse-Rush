@@ -82,6 +82,21 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		window.gameActivity._screen.addChild(this.cursorGraphics);
 	}
 
+	Character.prototype.addPoints = function (value) {
+		this.points += value;
+		gameActivity.ui.updateScore(this.id, this.points);
+	}
+
+	Character.prototype.removePoints = function (value) {
+		this.points -= value;
+		gameActivity.ui.updateScore(this.id, this.points);
+	}
+
+	Character.prototype.setPoints = function (value) {
+		this.points = value;
+		gameActivity.ui.updateScore(this.id, this.points);
+	}
+
 	Character.prototype.die = function (xPosition) {
 		if (!this.isVulnerable) {
 			return;
@@ -94,7 +109,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.removeFlag("canShoot");
 		this.x = xPosition;
 		this.y = 0;
-		--this.points;
+		this.removePoints(1);
 
 		setTimeout((function() {
 			this.addFlag("canRun");
