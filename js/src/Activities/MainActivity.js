@@ -90,6 +90,36 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
                 loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
+            MUSIC_Menu_Layer_01: new Howl({
+                src: ['assets/audio/MUSIC/MUSIC_Menu_Layer_01.ogg'],
+                preload: true,
+                loop: true,
+                onload: onSoundLoaded.bind(this)
+            }),
+            MUSIC_Menu_Layer_02: new Howl({
+                src: ['assets/audio/MUSIC/MUSIC_Menu_Layer_02.ogg'],
+                preload: true,
+                loop: true,
+                onload: onSoundLoaded.bind(this)
+            }),
+            MUSIC_Menu_Layer_03: new Howl({
+                src: ['assets/audio/MUSIC/MUSIC_Menu_Layer_03.ogg'],
+                preload: true,
+                loop: true,
+                onload: onSoundLoaded.bind(this)
+            }),
+            MUSIC_Menu_Layer_04: new Howl({
+                src: ['assets/audio/MUSIC/MUSIC_Menu_Layer_04.ogg'],
+                preload: true,
+                loop: true,
+                onload: onSoundLoaded.bind(this)
+            }),
+            MUSIC_Amb_Menu: new Howl({
+                src: ['assets/audio/MUSIC/Amb_Menu_loop.ogg'],
+                preload: true,
+                loop: true,
+                onload: onSoundLoaded.bind(this)
+            }),
             SFX_Feedback_Missile: new Howl({
             	src: ['assets/audio/SFX/SFX_Feedback_Missile.ogg'],
                 preload: true,
@@ -253,6 +283,16 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
         this._screen.addChild(this.title);
         this._screen.addChild(this.logo);
         this.showMenu();
+
+        this._assets.sounds["MUSIC_Amb_Menu"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_01"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_02"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_03"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_04"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_01"].volume(0.7);
+        this._assets.sounds["MUSIC_Menu_Layer_02"].volume(0.7);
+        this._assets.sounds["MUSIC_Menu_Layer_03"].volume(0.7);
+        this._assets.sounds["MUSIC_Menu_Layer_04"].volume(0.7);
     }
 
     MainActivity.prototype.showMenu = function () {
@@ -310,7 +350,20 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
         this.creditsLogo = null;
         this.creditsLogoBack = null;
         this.credits = null;
-        
+
+
+        this._assets.sounds["MUSIC_Amb_Menu"].stop();
+        this._assets.sounds["MUSIC_Menu_Layer_01"].stop();
+        this._assets.sounds["MUSIC_Menu_Layer_02"].stop();
+        this._assets.sounds["MUSIC_Menu_Layer_03"].stop();
+        this._assets.sounds["MUSIC_Menu_Layer_04"].stop();
+
+        this._assets.sounds["MUSIC_Amb_Menu"] = null;
+        this._assets.sounds["MUSIC_Menu_Layer_01"] = null;
+        this._assets.sounds["MUSIC_Menu_Layer_02"] = null;
+        this._assets.sounds["MUSIC_Menu_Layer_03"] = null;
+        this._assets.sounds["MUSIC_Menu_Layer_04"] = null;
+
         window.gameActivity = new GameActivity({
             level: 0
         });
