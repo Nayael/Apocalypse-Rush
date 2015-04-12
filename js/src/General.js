@@ -13,7 +13,7 @@ var General = (function(Entity, Graphics) {
 		this.width = 50;
 		this.height = 50;
 		this.isVulnerable = true;
-		this.hp = 20;
+		this.hp = 5;
 
 		this.faceRight = params.faceRight || false;
 		this.isCooldown = true;
@@ -59,10 +59,13 @@ var General = (function(Entity, Graphics) {
 		window.gameActivity.getScreen().addChild(bullet);
 	}
 
-	General.prototype.die = function() {
+	General.prototype.die = function(respawnX, killer) {
 		--this.hp;
 		if (this.hp <= 0) {
-			// window.gameActivity.onGeneralDead();
+			window.gameActivity.onGeneralDead();
+			if (killer) {
+				killer.points += 15;
+			}
 			window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
 			window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
 			window.gameActivity.getScreen().removeChild(this);

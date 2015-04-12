@@ -45,6 +45,10 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 		});
 		if (collision != null) {
 			if (this.owner != -1 && collision.value == Consts.TYPES.DESTRUCTIBLE_WALL) {
+				var player = gameActivity.getPlayer(this.owner);
+				if (player) {
+					++player.points;
+				}
 				window.gameActivity._map.changeBlock(collision.pos[0], collision.pos[1], 0);
 				// window.gameActivity._map._blocks[collision.pos[0]][collision.pos[1]] = 0;
 			}
