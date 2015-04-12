@@ -12,6 +12,12 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
 	    this.loader = new PxLoader();
         this.loading_bar_outside = null;
         this.loading_bar_inside = null;
+        this.title = null;
+        this.pressStart = null;
+        this.logo = null;
+        this.creditsLogo = null;
+        this.creditsLogoBack = null;
+        this.credits = null;
 	}
 	MainActivity.inheritsFrom(Activity);
 
@@ -145,9 +151,9 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Missile_Siren_Coming: new Howl({
-            	src: ['assets/audio/SFX/SFX_Missile_Siren_Coming.ogg'],
+            	src: ['assets/audio/SFX/SFX_Missile_Siren_Coming_Loop.ogg'],
                 preload: true,
-                loop: false,
+                loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Shoot_Player_01: new Howl({
@@ -195,26 +201,97 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
 	}
 
 	MainActivity.prototype.onLoadingFinished = function (e) {
-        this._screen.addChild(this.loading_bar_outside);
-        this._screen.addChild(this.loading_bar_inside);
+        this._screen.removeChild(this.loading_bar_outside);
+        this._screen.removeChild(this.loading_bar_inside);
 
         var splash = {
             graphics: new Graphics(null, {
-                spritesheet: AssetManager.instance.assets.images.splashscreen
+                spritesheet: AssetManager.instance.assets.images.background,
+                localX: -1280
+            })
+        };
+
+        this.title = {
+            graphics: new Graphics({x: Consts.SCREEN_WIDTH / 2, y: 100}, {
+                spritesheet: AssetManager.instance.assets.images.title,
+                localX: -AssetManager.instance.assets.images.title.width / 2
+            })
+        };
+
+        this.pressStart = {
+            graphics: new Graphics({x: Consts.SCREEN_WIDTH / 2, y: Consts.SCREEN_HEIGHT - 200}, {
+                spritesheet: AssetManager.instance.assets.images.pressStart,
+                localX: -AssetManager.instance.assets.images.pressStart.width / 2
+            })
+        };
+
+        this.creditsLogo = {
+            graphics: new Graphics({x: Consts.SCREEN_WIDTH - AssetManager.instance.assets.images.creditsLogo.width - 20, y: Consts.SCREEN_HEIGHT - AssetManager.instance.assets.images.creditsLogo.height - 20}, {
+                spritesheet: AssetManager.instance.assets.images.creditsLogo,
+            })
+        };
+
+        this.creditsLogoBack = {
+            graphics: new Graphics({x: Consts.SCREEN_WIDTH - AssetManager.instance.assets.images.creditsLogoBack.width - 20, y: Consts.SCREEN_HEIGHT - AssetManager.instance.assets.images.creditsLogoBack.height - 20}, {
+                spritesheet: AssetManager.instance.assets.images.creditsLogoBack,
+            })
+        };
+
+        this.logo = {
+            graphics: new Graphics({x: 20, y: Consts.SCREEN_HEIGHT - AssetManager.instance.assets.images.logo.height}, {
+                spritesheet: AssetManager.instance.assets.images.logo,
             })
         };
 
         this._screen.addChild(splash);
-
-        GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonPressed, this);
-
+        this._screen.addChild(this.title);
+        this._screen.addChild(this.logo);
+        this.showMenu();
     }
 
-    MainActivity.prototype.onButtonPressed = function (e) {
-        if (e.button == "START") {
-            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonPressed);
-            this.startGame();
+    MainActivity.prototype.showMenu = function () {
+        this._screen.addChild(this.pressStart);
+        this._screen.addChild(this.creditsLogo);
+        this._screen.removeChild(this.creditsLogoBack);
+
+        // Blink press start
+        var blink = setInterval(function () {
+            this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
+        }.bind(this), 600);
+
+        GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
+
+        function onButtonDown (e) {
+            if (e.button == "START") {
+                clearInterval(blink);
+                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+                this.startGame();
+            }
+            if (e.button == "BACK") {
+                clearInterval(blink);
+                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+                this.showCredits();
+            }
         }
+    }
+
+    MainActivity.prototype.showCredits = function () {
+        this._screen.removeChild(this.pressStart);
+        this._screen.removeChild(this.creditsLogo);
+        this._screen.addChild(this.creditsLogoBack);
+        GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
+        
+        function onButtonDown (e) {
+            if (e.button == "BACK") {
+                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+                this.hideCredits();
+                this.showMenu();
+            }
+        }
+    }
+
+    MainActivity.prototype.hideCredits = function () {
+        
     }
 
     MainActivity.prototype.startGame = function () {
