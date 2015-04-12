@@ -23,7 +23,7 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 		this.bombSpawnDelay = 10;
 		this.nextAlarmDelay = 3;
 
-		this.radius = 150;
+		this.radius = 130;
 	}
 	Bomb.inheritsFrom(Entity);
 

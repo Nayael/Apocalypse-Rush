@@ -1,4 +1,4 @@
-var Map = (function(Entity) {
+var Map = (function(Entity, Enemy, General) {
 	'use strict';
 
 	function Map(params) {
@@ -88,9 +88,18 @@ var Map = (function(Entity) {
 					window.gameActivity.enemies.push(enemy);
 					window.gameActivity._entities.push(enemy);
 					this._blocks[i].push(0);
-				}
-				else
+				} else if (value == Consts.TYPES.GENERAL_LEFT || value == Consts.TYPES.GENERAL_RIGHT) {
+					enemy = new General({
+						x: j * Consts.BLOCK_SIZE,
+						y: i * Consts.BLOCK_SIZE,
+						faceRight: (value == Consts.TYPES.GENERAL_RIGHT)
+					});
+					window.gameActivity.enemies.push(enemy);
+					window.gameActivity._entities.push(enemy);
+					this._blocks[i].push(0);
+				} else {
 					this._blocks[i].push(value);
+				}
 			}
 		}
 
@@ -216,4 +225,4 @@ var Map = (function(Entity) {
 	};
 
 	return Map;
-}(Entity));
+}(Entity, Enemy, General));
