@@ -1,4 +1,4 @@
-var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils) {
+var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager) {
 	'use strict';
 
 	function MainActivity(params) {
@@ -10,6 +10,8 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils) {
 
 		this._assets = assets;
 	    this.loader = new PxLoader();
+        this.loading_bar_outside = null;
+        this.loading_bar_inside = null;
 	}
 	MainActivity.inheritsFrom(Activity);
 
@@ -24,34 +26,34 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils) {
 	 * Preloads the assets
 	 */
 	MainActivity.prototype.onLoadingScreenLoaded = function(e) {
-        var loading_bar_outside = new Entity({
+        this.loading_bar_outside = new Entity({
         	graphics: new Graphics(null, {
                 spritesheet: AssetManager.instance.assets.images['loading_bar_outside']
         	})
         });
-        var loading_bar_inside  = new Entity({
+        this.loading_bar_inside  = new Entity({
         	graphics: new Graphics(null, {
                 spritesheet: AssetManager.instance.assets.images['loading_bar_inside']
         	})
         });
-        var barTotalWidth = loading_bar_inside.graphics.spriteWidth + 0;
-        loading_bar_inside.graphics.spriteWidth = 0;
-        loading_bar_inside.x = (Consts.SCREEN_WIDTH >> 1) - loading_bar_inside.graphics.spritesheet.width / 2;
-        loading_bar_inside.y = (Consts.SCREEN_HEIGHT >> 1);
+        var barTotalWidth = this.loading_bar_inside.graphics.spriteWidth + 0;
+        this.loading_bar_inside.graphics.spriteWidth = 0;
+        this.loading_bar_inside.x = (Consts.SCREEN_WIDTH >> 1) - this.loading_bar_inside.graphics.spritesheet.width / 2;
+        this.loading_bar_inside.y = (Consts.SCREEN_HEIGHT >> 1);
 
-        loading_bar_outside.x = (Consts.SCREEN_WIDTH >> 1) - loading_bar_outside.graphics.spritesheet.width / 2;
-        loading_bar_outside.y = (Consts.SCREEN_HEIGHT >> 1);
-        this._screen.addChild(loading_bar_outside);
-        this._screen.addChild(loading_bar_inside);
+        this.loading_bar_outside.x = (Consts.SCREEN_WIDTH >> 1) - this.loading_bar_outside.graphics.spritesheet.width / 2;
+        this.loading_bar_outside.y = (Consts.SCREEN_HEIGHT >> 1);
+        this._screen.addChild(this.loading_bar_outside);
+        this._screen.addChild(this.loading_bar_inside);
 
         AssetManager.instance.removeListener(AssetManager.LOADING_COMPLETE, this.onLoadingScreenLoaded);
 
         AssetManager.instance.enqueueAssets(this._assets);
         AssetManager.instance.addListener(AssetManager.LOADING_COMPLETE, onImagesLoadingComplete, this);
-        AssetManager.instance.loadAll(updateLoadingScreen);
+        AssetManager.instance.loadAll(updateLoadingScreen.bind(this));
 
         function updateLoadingScreen(e) {
-            loading_bar_inside.graphics.spriteWidth = barTotalWidth * (e.completedCount / e.totalCount);
+            this.loading_bar_inside.graphics.spriteWidth = barTotalWidth * (e.completedCount / e.totalCount);
         };
 
 	 	var nbLoadedSounds = 0;
@@ -193,13 +195,36 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils) {
 	}
 
 	MainActivity.prototype.onLoadingFinished = function (e) {
-	    window.gameActivity = new GameActivity({
+        this._screen.addChild(this.loading_bar_outside);
+        this._screen.addChild(this.loading_bar_inside);
+
+        var splash = {
+            graphics: new Graphics(null, {
+                spritesheet: AssetManager.instance.assets.images.splashscreen
+            })
+        };
+
+        this._screen.addChild(splash);
+
+        GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonPressed, this);
+
+    }
+
+    MainActivity.prototype.onButtonPressed = function (e) {
+        if (e.button == "START") {
+            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonPressed);
+            this.startGame();
+        }
+    }
+
+    MainActivity.prototype.startGame = function () {
+        window.gameActivity = new GameActivity({
             level: 0
         });
-	    this.application.removeActivity(this);
-	    this.application.addActivity(gameActivity);
-	    gameActivity.launch(this._assets);
-	}
+        this.application.removeActivity(this);
+        this.application.addActivity(gameActivity);
+        gameActivity.launch(this._assets);
+    }
 
 	return MainActivity;
-}(Activity, Howl, Consts, AssetManager, Utils));
+}(Activity, Howl, Consts, AssetManager, Utils, GamepadManager));
