@@ -71,6 +71,9 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 	}
 
 	Character.prototype.die = function (xPosition) {
+		if (!this.isVulnerable) {
+			return;
+		}
 		window.gameActivity._assets.sounds["SFX_Impact_Hit_Player_0" + (this.id + 1)].play();
 
 		this.isVulnerable = false;
@@ -128,6 +131,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 	
 		this.xSpeed += this.xForce * dt;
 		this.ySpeed += this.yForce * dt;
+
+		this.y %= 650;
 	}
 
 	Character.prototype.handleControls = function (dt) {
@@ -301,6 +306,14 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.onTheGround = false;
 			this.removeFlag("canJump");
 			return;
+		}
+
+		if (collisionPoint.value == 8) {
+			this.die(collisionPoint.x - Consts.SCREEN_WIDTH / 4);
+		}
+
+		if (collisionPoint.dist == 0) {
+			collisionPoint.angle = - Math.PI / 2;
 		}
 
 		var angle = collisionPoint.angle;
