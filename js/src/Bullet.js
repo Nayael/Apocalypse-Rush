@@ -13,7 +13,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 		this.time = 0;
 		this.direction = 1;
 		this.speed = 20;
-		this.owner = params.owner !== undefined ? params.owner : -1;
+		this.owner = params ? (params.owner !== undefined ? params.owner : -1) : -1;
 		this.graphics = new Graphics(this, {
 			spritesheet: AssetManager.instance.assets.images.bullet,
 			localX: -AssetManager.instance.assets.images.bullet.width / 2,

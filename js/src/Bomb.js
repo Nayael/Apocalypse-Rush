@@ -31,8 +31,8 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 		gameActivity._screen.removeChild(this);
 		this.moving = false;
 		this.alarm.stop();
-		this.bombSpawnDelay = Math.floor(15 + Math.random() * 10);
-		this.nextAlarmDelay = this.bombSpawnDelay - Math.floor(2 + Math.random() * 1);
+		this.bombSpawnDelay = (15 + Math.random() * 10);
+		this.nextAlarmDelay = this.bombSpawnDelay - (2 + Math.random() * 1);
 		this.enabled = true;
 		this.x = gameActivity._map.cameraOffset + 2200;
 	}

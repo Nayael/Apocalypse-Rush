@@ -73,13 +73,16 @@ var Map = (function(Entity) {
 	}
 
 	Map.prototype.loadBlocks = function (pattern) {
+		var enemy = null;
 		for (var i = 0; i < pattern.length; i++) {
 			for (var j = 0; j < pattern[i].length; j++) {
 				if (pattern[i][j] == 1) {
-					window.gameActivity.enemies.push(new Enemy({
+					enemy = new Enemy({
 						x: j * Consts.BLOCK_SIZE,
 						y: i * Consts.BLOCK_SIZE
-					}));
+					});
+					window.gameActivity.enemies.push(enemy);
+					window.gameActivity._entities.push(enemy);
 					this._blocks[i].push(0);
 				}
 				else
