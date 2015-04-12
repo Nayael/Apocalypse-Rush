@@ -10,11 +10,15 @@ var Enemy = (function(Entity, Graphics) {
 
 		this.x = params.x;
 		this.y = params.y;
+		this.width = 50;
+		this.height = 50;
+		this.isVulnerable = true;
 
 		this.faceRight = false;
 		this.isCooldown = true;
-		this.shootCooldown = 0.7 + Math.random() * 2;
+		this.shootCooldown = 1 + Math.random() * 2;
 		this.shootCooldownValue = 0;
+		this.id = -1;
 
 		this.graphics = new Graphics(this, {
 			spritesheet: AssetManager.instance.assets.images["enemy"]
@@ -49,10 +53,15 @@ var Enemy = (function(Entity, Graphics) {
 		bullet.x = this.x + (this.faceRight ? 50 : -50);
 		bullet.y = this.y + 25;
 		bullet.init();
+		bullet.ttl = 0.6;
 		window.gameActivity._entities.push(bullet);
 		window.gameActivity.getScreen().addChild(bullet);
+	}
 
-		// window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].play();
+	Enemy.prototype.die = function() {
+		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
+		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
+		window.gameActivity.getScreen().removeChild(this);
 	}
 
 	Enemy.prototype.getBullet = function () {
