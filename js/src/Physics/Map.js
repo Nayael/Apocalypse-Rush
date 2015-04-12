@@ -67,23 +67,18 @@ var Map = (function(Entity, Enemy, General) {
 
 		if (x > width / 4 - 200 && x < width / 4 + 200) {
 			ratio = (400 - (x - width / 4 + 200)) / 400;
-			// console.log(this);
-			// debugger;
-			console.log(ratio);
-			this.activity._assets.sounds["MUSIC_Layer_01"].volume(ratio * .5);
-			this.activity._assets.sounds["MUSIC_Layer_02"].volume((1 - ratio) * .5);
+			this.activity._assets.sounds["MUSIC_Layer_01"].volume(ratio * .6);
+			this.activity._assets.sounds["MUSIC_Layer_02"].volume((1 - ratio) * .6);
 		}
 		else if (x > width / 2 - 200 && x < width / 2 + 200) {
 			ratio = (400 - (x - width / 2 + 200)) / 400;
-			console.log(ratio);
-			this.activity._assets.sounds["MUSIC_Layer_02"].volume(ratio * .5);
-			this.activity._assets.sounds["MUSIC_Layer_03"].volume((1 - ratio) * .5);
+			this.activity._assets.sounds["MUSIC_Layer_02"].volume(ratio * .6);
+			this.activity._assets.sounds["MUSIC_Layer_03"].volume((1 - ratio) * .6);
 		}
 		else if (x > 3 * width / 4 - 200 && x < 3 * width / 4 + 200) {
 			ratio = (400 - (x - 3 * width / 4 + 200)) / 400;
-			console.log(ratio);
-			this.activity._assets.sounds["MUSIC_Layer_03"].volume(ratio * .5);
-			this.activity._assets.sounds["MUSIC_Layer_04"].volume((1 - ratio) * .5);
+			this.activity._assets.sounds["MUSIC_Layer_03"].volume(ratio * .6);
+			this.activity._assets.sounds["MUSIC_Layer_04"].volume((1 - ratio) * .6);
 		}
 
 		// console.log(this.cameraOffset, this._blocks[0].length * Consts.BLOCK_SIZE);
