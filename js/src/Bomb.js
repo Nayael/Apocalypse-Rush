@@ -17,7 +17,7 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 		this.speed = 20;
 		this.alarm = window.gameActivity._assets.sounds.SFX_Missile_Siren_Coming;
 		this.missileSound = window.gameActivity._assets.sounds.SFX_Feedback_Missile;
-		this.alarm.volume(0.9);
+		this.alarm.volume(0.65);
 
 		this.moving = false;
 		this.bombSpawnDelay = 10;
