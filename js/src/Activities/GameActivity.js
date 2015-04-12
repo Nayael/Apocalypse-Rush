@@ -26,7 +26,6 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	GameActivity.prototype.launchGame = function() {
 		this.bomb = new Bomb();
 		this._entities.push(this.bomb);
-		this._screen.addChild(this.bomb);
 
 		// this._assets.sounds["MUSIC_Layer_01"].play();
 		// this._assets.sounds["MUSIC_Layer_02"].play();
@@ -112,9 +111,10 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	GameActivity.prototype.checkCollideWithPlayers = function () {
 		var bullet, player, playerX, playerY, respawnX;
+		var j = 0;
 		for (var i = 0; i < this.bullets.length; i++) {
 			bullet = this.bullets[i];
-			for (var j = 0; j < this._players.length; j++) {
+			for (j = 0; j < this._players.length; j++) {
 				player = this._players[j];
 				if (!player.isVulnerable) {
 					continue;
@@ -134,6 +134,22 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 						break;
 					}
 				}
+			}
+		}
+
+		for (var j = 0; j < this._players.length; j++) {
+			player = this._players[j];
+			if (!player.isVulnerable) {
+				continue;
+			}
+
+			playerX = player.x + player.width / 2;
+			playerY = player.y + player.height / 2;
+			if ((this.bomb.x - playerX) * (this.bomb.x - playerX) + (this.bomb.y - playerY) * (this.bomb.y - playerY) < ((this.bomb.radius + Consts.CHARACTER_RADIUS) * (this.bomb.radius + Consts.CHARACTER_RADIUS))) {
+				respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
+				window.gameActivity._assets.sounds["SFX_Impact_Siren_01"].play();
+				player.die(respawnX);
+				break;
 			}
 		}
 	}

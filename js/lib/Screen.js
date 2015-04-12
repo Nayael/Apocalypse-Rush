@@ -34,6 +34,10 @@ var Screen = (function() {
          * @param  {Object} child The child to add
          */
         this.addChild = function(child, addToBuffer, index) {
+            if (_children.indexOf(child) != -1) {
+                return;
+            }
+
             if (index === undefined || index > _children.length) {
                 index = _children.length;
             }

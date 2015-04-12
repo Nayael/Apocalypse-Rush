@@ -71,6 +71,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 	}
 
 	Character.prototype.die = function (xPosition) {
+		window.gameActivity._assets.sounds["SFX_Impact_Hit_Player_0" + (this.id + 1)].play();
+
 		this.isVulnerable = false;
 		this.removeFlag("canRun");
 		this.removeFlag("canJump");
@@ -283,6 +285,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 	Character.prototype.jump = function () {
 		this.ySpeed = -800;
+		window.gameActivity._assets.sounds["SFX_Jump_Player_0" + (this.id + 1)].play();
 	}
 
 	Character.prototype.handleCollision = function (collisionPoint) {
@@ -325,6 +328,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		bullet.init(this.id);
 		window.gameActivity._entities.push(bullet);
 		window.gameActivity.getScreen().addChild(bullet);
+
+		window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].play();
 	}
 
 	Character.prototype.getBullet = function () {
