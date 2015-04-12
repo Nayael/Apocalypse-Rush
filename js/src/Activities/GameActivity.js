@@ -110,27 +110,28 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 
 	GameActivity.prototype.checkCollideWithPlayers = function () {
-		var bullet, player, playerX, playerY, respawnX;
+		var bullet, player, playerX, playerY, character, characterX, characterY, respawnX;
 		var j = 0;
+		var characters = this._players.concat(this.enemies);
 		for (var i = 0; i < this.bullets.length; i++) {
 			bullet = this.bullets[i];
-			for (j = 0; j < this._players.length; j++) {
-				player = this._players[j];
-				if (!player.isVulnerable) {
+			for (j = 0; j < characters.length; j++) {
+				character = characters[j];
+				if (!character.isVulnerable) {
 					continue;
 				}
 
-				if (bullet.owner != player.id) {
-					playerX = player.x + player.width / 2;
-					playerY = player.y + player.height / 2;
-					if ((bullet.x - playerX) * (bullet.x - playerX) + (bullet.y - playerY) * (bullet.y - playerY) < ((bullet.radius + Consts.CHARACTER_RADIUS) * (bullet.radius + Consts.CHARACTER_RADIUS))) {
+				if (bullet.owner != character.id) {
+					characterX = character.x + character.width / 2;
+					characterY = character.y + character.height / 2;
+					if ((bullet.x - characterX) * (bullet.x - characterX) + (bullet.y - characterY) * (bullet.y - characterY) < ((bullet.radius + Consts.CHARACTER_RADIUS) * (bullet.radius + Consts.CHARACTER_RADIUS))) {
 						if (bullet.direction == 1) {
-							respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
+							respawnX = character.x - (character.x - this._map.cameraOffset) * (2/3);
 						} else {
-							respawnX = player.x + (-250 + Math.floor(Math.random() * 500));
+							respawnX = character.x + (-250 + Math.floor(Math.random() * 500));
 						}
 						bullet.die();
-						player.die(respawnX);
+						character.die(respawnX);
 						break;
 					}
 				}

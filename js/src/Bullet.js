@@ -9,11 +9,11 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 		Entity.apply(this, arguments);
 
 		this.radius = 5;
-		this.ttl = 2;
+		this.ttl = 0.3;
 		this.time = 0;
 		this.direction = 1;
 		this.speed = 20;
-		this.owner = params.owner !== undefined ? params.owner : -1;
+		this.owner = params ? (params.owner !== undefined ? params.owner : -1) : -1;
 		this.graphics = new Graphics(this, {
 			spritesheet: AssetManager.instance.assets.images.bullet,
 			localX: -AssetManager.instance.assets.images.bullet.width / 2,
@@ -23,7 +23,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 	Bullet.inheritsFrom(Entity);
 
 	Bullet.prototype.init = function (owner) {
-		this.ttl = 2;
+		this.ttl = 0.3;
 		this.time = 0;
 		this.enabled = true;
 		this.owner = owner !== undefined ? owner : -1;

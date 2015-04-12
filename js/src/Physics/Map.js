@@ -77,12 +77,15 @@ var Map = (function(Entity) {
 		for (var i = 0; i < pattern.length; i++) {
 			for (var j = 0; j < pattern[i].length; j++) {
 				value = pattern[i][j];
+				var enemy = null;
 
 				if (value == Consts.TYPES.ENEMY_LEFT) {
-					window.gameActivity.enemies.push(new Enemy({
+					enemy = new Enemy({
 						x: j * Consts.BLOCK_SIZE,
 						y: i * Consts.BLOCK_SIZE
-					}));
+					});
+					window.gameActivity.enemies.push(enemy);
+					window.gameActivity._entities.push(enemy);
 					this._blocks[i].push(0);
 				}
 				else
