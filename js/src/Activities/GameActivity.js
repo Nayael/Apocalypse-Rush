@@ -13,6 +13,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this.bullets = [];
 		this.bomb = null;
 		this.enemies = [];
+		this.level = params ? params.level : 0;
 	}
 	GameActivity.inheritsFrom(Activity);
 
