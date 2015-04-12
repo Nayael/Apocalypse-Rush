@@ -33,6 +33,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this._assets.sounds["MUSIC_Layer_02"].play();
 		this._assets.sounds["MUSIC_Layer_03"].play();
 		this._assets.sounds["MUSIC_Layer_04"].play();
+
 	};
 
 	GameActivity.prototype.initPlayers = function () {
@@ -174,7 +175,8 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			console.log('this._players[i].points: ', this._players[i].points);
 		}
 
-		setTimeout(this.nextLevel.bind(this), 4000);
+		this.ui.showLeaderboard();
+		GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard, this);
 	}
 
 	GameActivity.prototype.getFirstPlayer = function () {
@@ -196,6 +198,13 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			}
 		}
 		return;
+	}
+
+	GameActivity.prototype.onButtonDownLeaderboard = function (e) {
+		if (e.button == "START") {
+			GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard);
+			this.nextLevel();
+		}
 	}
 
 	GameActivity.prototype.nextLevel = function() {
