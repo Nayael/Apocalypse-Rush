@@ -132,9 +132,9 @@ var Map = (function(Entity) {
 	Map.prototype.checkCollision = function (circle) {
 		var ctx = this.activity.application._stage.context;
 		var scaleFactor = this.activity.application._stage.canvas.scaleFactor;
-		ctx.beginPath();
-		ctx.arc(circle.x * scaleFactor, circle.y * scaleFactor, circle.radius * scaleFactor, 0, Math.PI * 2);
-		ctx.stroke();
+		// ctx.beginPath();
+		// ctx.arc(circle.x * scaleFactor, circle.y * scaleFactor, circle.radius * scaleFactor, 0, Math.PI * 2);
+		// ctx.stroke();
 
 		var minX = (circle.x - circle.radius) - (circle.x - circle.radius) % Consts.BLOCK_SIZE;
 		var maxX = (circle.x + circle.radius) - (circle.x + circle.radius) % Consts.BLOCK_SIZE;
