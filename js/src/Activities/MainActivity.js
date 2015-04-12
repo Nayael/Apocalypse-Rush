@@ -209,6 +209,18 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
+            }),
+            HUD_Switch: new Howl({
+                src: ['assets/audio/HUD/HUD_Switch.ogg'],
+                preload: true,
+                loop: false,
+                onload: onSoundLoaded.bind(this)
+            }),
+            HUD_Click: new Howl({
+                src: ['assets/audio/HUD/HUD_Click.ogg'],
+                preload: true,
+                loop: false,
+                onload: onSoundLoaded.bind(this)
             })
 	    };
 
@@ -296,6 +308,7 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     }
 
     MainActivity.prototype.showMenu = function () {
+        this._assets.sounds["HUD_Switch"].play();
         this._screen.addChild(this.pressStart);
         this._screen.addChild(this.creditsLogo);
 
@@ -310,6 +323,7 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
             if (e.button == "START") {
                 clearInterval(blink);
                 GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+                this._assets.sounds["HUD_Click"].play();
                 this.startGame();
             }
             if (e.button == "BACK") {
@@ -321,6 +335,8 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     }
 
     MainActivity.prototype.showCredits = function () {
+
+        this._assets.sounds["HUD_Switch"].play();
         this._screen.removeChild(this.pressStart);
         this._screen.removeChild(this.creditsLogo);
         this._screen.addChild(this.credits);

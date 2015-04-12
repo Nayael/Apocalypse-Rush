@@ -398,6 +398,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		window.gameActivity._entities.push(bullet);
 		window.gameActivity.getScreen().addChild(bullet);
 
+		window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].volume(0.6);
 		window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].play();
 	}
 
