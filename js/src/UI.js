@@ -81,7 +81,7 @@ var UI = (function(Graphics, AssetManager) {
 			this.context.fillText(score.value, x + icon.width * this.canvas.scaleFactor * 2 + 20, y + 35);
 		}
 
-		this.context.fillText("Press START to continue", x + icon.width * this.canvas.scaleFactor * 2 - 100, 300);
+		this.context.fillText("Press START to continue", x -(100 * this.canvas.scaleFactor), 580 * this.canvas.scaleFactor);
 
 	}
 
