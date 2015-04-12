@@ -12,6 +12,8 @@ var UI = (function(Graphics, AssetManager) {
 		this.canvas.width = gameCanvas.width;
 		this.canvas.height = gameCanvas.height;
 		this.canvas.scaleFactor = gameCanvas.scaleFactor;
+        this.canvas.style.top = (window.innerHeight / 2 - this.canvas.height / 2) + 'px';
+		
 		this.context = this.canvas.getContext('2d');
 		this.scores = [];
 
