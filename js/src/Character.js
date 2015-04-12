@@ -14,19 +14,19 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 		this.points = 0;
 
-		this.speed = 5000;
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.xForce = 0;
-		this.yForce = 1500;
-		this.onTheGround = false;
+		this.speed        = 5000;
+		this.xSpeed       = 0;
+		this.ySpeed       = 0;
+		this.xForce       = 0;
+		this.yForce       = 1500;
+		this.onTheGround  = false;
 		this.isVulnerable = true;
 
-		this.faceRight = true;
-		this.bullets = [];
-		this.shootCooldown = 0.25;
+		this.faceRight          = true;
+		this.bullets            = [];
+		this.shootCooldown      = 0.25;
 		this.shootCooldownValue = 0;
-		this.isCooldown = false;
+		this.isCooldown         = false;
 
 		// ID of the character is also the gamepad ID
 		this.id = -1;
@@ -97,7 +97,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		gameActivity.ui.updateScore(this.id, this.points);
 	}
 
-	Character.prototype.die = function (xPosition) {
+	Character.prototype.die = function (respawn) {
 		if (!this.isVulnerable) {
 			return;
 		}
@@ -107,15 +107,17 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.removeFlag("canRun");
 		this.removeFlag("canJump");
 		this.removeFlag("canShoot");
-		this.x = xPosition;
-		this.y = 0;
+
+		this.x = respawn.x || 0;
+		this.y = respawn.y || 0;
+		// this.y = 0;
 		this.removePoints(1);
 
 		setTimeout((function() {
 			this.addFlag("canRun");
 			this.addFlag("canJump");
 			this.addFlag("canShoot");
-		}).bind(this), 1000);
+		}).bind(this), 750);
 
 		var blink = setInterval(function () {
 			this.cursorGraphics.graphics.enabled = !this.cursorGraphics.graphics.enabled;
@@ -126,8 +128,11 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			clearInterval(blink);
 			this.graphics.enabled = true;
 			this.cursorGraphics.graphics.enabled = true;
+		}).bind(this), 1000);
+
+		setTimeout((function() {
 			this.isVulnerable = true;
-		}).bind(this), 2500);
+		}).bind(this), 1500);
 	}
 
 	Character.prototype.update = function (dt) {
@@ -317,6 +322,10 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			this.faceRight = false;
 		}
 
+		if (this.stunned) {
+			return;
+		}
+
 		if ((this.xSpeed < 0 && this.move.x > 0) || (this.xSpeed > 0 && this.move.x < 0))
 			this.xSpeed = 0;
 
@@ -346,7 +355,9 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		}
 
 		if (collisionPoint.value == Consts.TYPES.SPIKE) {
-			this.die(collisionPoint.x - Consts.SCREEN_WIDTH / 4);
+			this.die({
+				x: collisionPoint.x - Consts.SCREEN_WIDTH / 4
+			});
 		}
 
 		if (collisionPoint.dist == 0) {

@@ -130,14 +130,20 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 					characterY = character.y + character.height / 2;
 					if ((bullet.x - characterX) * (bullet.x - characterX) + (bullet.y - characterY) * (bullet.y - characterY) < ((bullet.radius + Consts.CHARACTER_RADIUS) * (bullet.radius + Consts.CHARACTER_RADIUS))) {
 						if (bullet.direction == 1) {
-							respawnX = character.x - (character.x - this._map.cameraOffset) * (2/3);
+							respawnX = character.x - 100;
+							// respawnX = character.x - (character.x - this._map.cameraOffset) * (2/3);
 						} else {
-							respawnX = character.x + (-250 + Math.floor(Math.random() * 500));
+							respawnX = character.x - 100;
+							// respawnX = character.x + (-250 + Math.floor(Math.random() * 500));
 						}
+
 						// Points to the player
 						killer = this.getPlayer(bullet.owner);
 						bullet.die();
-						character.die(respawnX, killer);
+						character.die({
+							x: respawnX,
+							y: character.y - 50
+						}, killer);
 						break;
 					}
 				}
@@ -155,7 +161,9 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			if ((this.bomb.x - playerX) * (this.bomb.x - playerX) + (this.bomb.y - playerY) * (this.bomb.y - playerY) < ((this.bomb.radius + Consts.CHARACTER_RADIUS) * (this.bomb.radius + Consts.CHARACTER_RADIUS))) {
 				respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
 				window.gameActivity._assets.sounds["SFX_Impact_Siren_01"].play();
-				player.die(respawnX);
+				player.die({
+					x: respawnX
+				});
 				break;
 			}
 		}

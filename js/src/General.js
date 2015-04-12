@@ -59,10 +59,12 @@ var General = (function(Entity, Graphics) {
 		window.gameActivity.getScreen().addChild(bullet);
 	}
 
-	General.prototype.die = function(respawnX, killer) {
+	General.prototype.die = function(respawn, killer) {
 		--this.hp;
 		if (this.hp <= 0) {
-			window.gameActivity.onGeneralDead();
+			if (window.gameActivity.level == 0) {
+				window.gameActivity.onGeneralDead();
+			}
 			if (killer) {
 				killer.addPoints(15);
 			}

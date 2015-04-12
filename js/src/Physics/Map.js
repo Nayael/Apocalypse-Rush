@@ -67,7 +67,9 @@ var Map = (function(Entity, Enemy, General) {
 	Map.prototype.checkPlayersPosition = function () {
 		for (var i = this.activity._players.length; i--;) {
 			if (this.activity._players[i].x < this.cameraOffset) {
-				this.activity._players[i].die(this.cameraOffset + 960);
+				this.activity._players[i].die({
+					x: this.cameraOffset + 960
+				});
 			}
 		}
 	}
