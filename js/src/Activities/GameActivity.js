@@ -27,10 +27,10 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this.bomb = new Bomb();
 		this._entities.push(this.bomb);
 
-		// this._assets.sounds["MUSIC_Layer_01"].play();
-		// this._assets.sounds["MUSIC_Layer_02"].play();
-		// this._assets.sounds["MUSIC_Layer_03"].play();
-		// this._assets.sounds["MUSIC_Layer_04"].play();
+		this._assets.sounds["MUSIC_Layer_01"].play();
+		this._assets.sounds["MUSIC_Layer_02"].play();
+		this._assets.sounds["MUSIC_Layer_03"].play();
+		this._assets.sounds["MUSIC_Layer_04"].play();
 	};
 
 	GameActivity.prototype.initPlayers = function () {

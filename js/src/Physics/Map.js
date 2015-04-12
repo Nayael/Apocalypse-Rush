@@ -90,24 +90,39 @@ var Map = (function(Entity) {
 		this.renderBlocks();
 	};
 
+	Map.prototype.changeBlock = function (x, y, newBlock) {
+		console.log(arguments);
+		this._blocks[x][y] = newBlock;
+		this.renderBlock(y, x, newBlock, true);
+	};
+
 	Map.prototype.renderBlocks = function () {
-		this.context.fillStyle = "rgb(255,0,0)";
 		for (var i = 0; i < this._blocks.length; i++) {
 			for (var j = 0; j < this._blocks[i].length; j++) {
 				if (this._blocks[i][j]) {
-					this.context.drawImage(	this.textureTiles,
-											(this._blocks[i][j] - 2) * Consts.BLOCK_SIZE,
-											0,
-											Consts.BLOCK_SIZE,
-											Consts.BLOCK_SIZE,
-											j * Consts.BLOCK_SIZE,
-											i * Consts.BLOCK_SIZE,
-											Consts.BLOCK_SIZE,
-											Consts.BLOCK_SIZE);
+					this.renderBlock(j, i, this._blocks[i][j]);
 				}
 			}
 		}
 	};
+
+	Map.prototype.renderBlock = function (x, y, block, clear) {
+		if (clear) {
+			this.context.clearRect(	x * Consts.BLOCK_SIZE,
+									y * Consts.BLOCK_SIZE,
+									Consts.BLOCK_SIZE,
+									Consts.BLOCK_SIZE);
+		}
+		this.context.drawImage(	this.textureTiles,
+								(block - 2) * Consts.BLOCK_SIZE,
+								0,
+								Consts.BLOCK_SIZE,
+								Consts.BLOCK_SIZE,
+								x * Consts.BLOCK_SIZE,
+								y * Consts.BLOCK_SIZE,
+								Consts.BLOCK_SIZE,
+								Consts.BLOCK_SIZE);
+	}
 
 	Map.prototype.checkCollision = function (circle) {
 		var ctx = this.activity.application._stage.context;
@@ -152,6 +167,7 @@ var Map = (function(Entity) {
 						collisionPoint.dist  = collisionInfo.dist;
 						collisionPoint.angle = collisionInfo.angle;
 						collisionPoint.value = block;
+						collisionPoint.pos 	 = [j / Consts.BLOCK_SIZE, i / Consts.BLOCK_SIZE];
 					}
 					// console.log(collisionInfo);
 					// console.log(point);
