@@ -25,7 +25,7 @@ var UI = (function(Graphics, AssetManager) {
 			});
 			icon = AssetManager.instance.assets.images["cursor_p" + (i + 1)];
 			this.context.drawImage(icon, 0, 0, icon.width, icon.height, i * (1920 / 4) * this.canvas.scaleFactor, 550 * this.canvas.scaleFactor, icon.width * this.canvas.scaleFactor * 2, icon.height * this.canvas.scaleFactor * 2);
-			this.updateScore(i, Math.floor(Math.random() * 10)/*0*/);
+			this.updateScore(i, 0);
 		}
 		document.body.appendChild(this.canvas);
 	}

@@ -67,6 +67,18 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 
 	GameActivity.prototype.initMap = function() {
+		// Background
+		var bg = null, bgImage;
+		for (var i = 0; i < 3; i++) {
+			bgImage = this._assets.images.background;
+			bg = {
+				graphics: new Graphics({x: i * bgImage.width}, {
+					spritesheet: bgImage
+				})
+			};
+			this._screen.addChild(bg);
+		}
+
 		this._map = new Map({
 			activity: this,
 			level: this.level
@@ -171,10 +183,6 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 
 	GameActivity.prototype.onGeneralDead = function () {
-		for (var i = 0; i < this._players.length; i++) {
-			console.log('this._players[i].points: ', this._players[i].points);
-		}
-
 		this.ui.showLeaderboard();
 		GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard, this);
 	}

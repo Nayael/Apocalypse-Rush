@@ -13,6 +13,7 @@ var assets = (function() {
             // "menu_play_button": ["assets/textures/menu/menu_play_button.png", "menu"],
             // "logo_isart_digital": ["assets/textures/menu/logo_isart_digital.png", "menu"],
 
+            "background" : ["assets/textures/background.png", "game"],
             "player_0-idle_l": ["assets/textures/characters/0/idle_l.png", 'game'],
             "player_0-idle_r": ["assets/textures/characters/0/idle_r.png", 'game'],
             "player_0-jump_l": ["assets/textures/characters/0/jump_l.png", 'game'],

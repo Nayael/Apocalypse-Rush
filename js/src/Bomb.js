@@ -17,7 +17,7 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 		this.speed = 20;
 		this.alarm = window.gameActivity._assets.sounds.SFX_Missile_Siren_Coming;
 		this.missileSound = window.gameActivity._assets.sounds.SFX_Feedback_Missile;
-		this.alarm.volume(0.3);
+		this.alarm.volume(0.9);
 
 		this.moving = false;
 		this.bombSpawnDelay = 10;
@@ -42,11 +42,11 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 
 		if (this.bombSpawnDelay > 0 && this.bombSpawnDelay <= this.nextAlarmDelay && !this.alarm.playing()) {
 			this.alarm.play();
-			this.alarm.fade(0, 0.3, 2000);
+			this.alarm.fade(0, 0.9, 2000);
 		}
 		
 		if (this.bombSpawnDelay <= 0 && this.moving == false) {
-			this.alarm.fade(0.3, 0, 2000);
+			this.alarm.fade(0.9, 0, 2000);
 			this.moving = true;
 			this.missileSound.play();
 			var player = gameActivity.getFirstPlayer();
