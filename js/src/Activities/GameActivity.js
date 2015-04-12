@@ -35,7 +35,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this._assets.sounds["MUSIC_Layer_03"].play();
 		this._assets.sounds["MUSIC_Layer_04"].play();
 
-		this._assets.sounds["MUSIC_Layer_01"].volume(.5);
+		this._assets.sounds["MUSIC_Layer_01"].volume(.6);
 		this._assets.sounds["MUSIC_Layer_02"].volume(0);
 		this._assets.sounds["MUSIC_Layer_03"].volume(0);
 		this._assets.sounds["MUSIC_Layer_04"].volume(0);
