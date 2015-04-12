@@ -34,5 +34,12 @@ var UI = (function(Graphics, AssetManager) {
 		this.context.fillText(value, x, y);
 	}
 
+	UI.prototype.destroy = function () {
+		this.scores.length = 0;
+		this.scores = null;
+		document.body.removeChild(this.canvas);
+		this.canvas = null;
+	}
+
 	return UI;
 }(Graphics, AssetManager));

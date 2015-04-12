@@ -193,7 +193,9 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils) {
 	}
 
 	MainActivity.prototype.onLoadingFinished = function (e) {
-	    window.gameActivity = new GameActivity();
+	    window.gameActivity = new GameActivity({
+            level: 0
+        });
 	    this.application.removeActivity(this);
 	    this.application.addActivity(gameActivity);
 	    gameActivity.launch(this._assets);

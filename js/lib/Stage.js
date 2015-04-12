@@ -94,6 +94,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         };
 
         this.removeScreen = function(s) {
+            // console.log('s: ', s);
             var index = _screens.indexOf(s);
             if (index != -1) {
                 _screens.splice(index, 1);
@@ -136,6 +137,7 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
             // Updating all the children
             for (var i = 0, j = 0, sc = null, child = null, children = null, bufferChildren = null, nbScreens = _screens.length; i < nbScreens; ++i) {
                 sc = _screens[i];
+
                 if (!sc.getActivity().isEnabled()) {
                     continue;
                 }

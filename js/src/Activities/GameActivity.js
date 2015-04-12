@@ -6,7 +6,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		if (!(this instanceof GameActivity)) {
 			return new GameActivity(params);
 		}
-		Activity.constructor.apply(this, params);
+		Activity.apply(this, arguments);
 
 		this._assets = {};
 		this._players = [];
@@ -67,7 +67,8 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	GameActivity.prototype.initMap = function() {
 		this._map = new Map({
-			activity: this
+			activity: this,
+			level: this.level
 		});
 
 		this._circle = {
@@ -164,6 +165,8 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		for (var i = 0; i < this._players.length; i++) {
 			console.log('this._players[i].points: ', this._players[i].points);
 		}
+
+		setTimeout(this.nextLevel.bind(this), 4000);
 	}
 
 	GameActivity.prototype.getFirstPlayer = function () {
@@ -185,6 +188,35 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			}
 		}
 		return;
+	}
+
+	GameActivity.prototype.nextLevel = function() {
+		window.gameActivity = null;
+	    this.application.removeActivity(this);
+	    this._entities.length = 0;
+	    this._players.length = 0;
+	    this.enemies.length = 0;
+	    this.bullets.length = 0;
+	    this._entities = null;
+	    this._players = null;
+	    this.enemies = null;
+	    this.bullets = null;
+	    this.ui.destroy();
+		this.ui = null;
+
+		this._assets.sounds["MUSIC_Layer_01"].stop();
+		this._assets.sounds["MUSIC_Layer_02"].stop();
+		this._assets.sounds["MUSIC_Layer_03"].stop();
+		this._assets.sounds["MUSIC_Layer_04"].stop();
+
+	    var assets = this._assets;
+	    this._assets = null;
+
+		window.gameActivity = new GameActivity({
+            level: 1
+        });
+	    this.application.addActivity(window.gameActivity);
+	    window.gameActivity.launch(assets);
 	}
 
 	return GameActivity;

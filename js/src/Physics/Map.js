@@ -33,7 +33,7 @@ var Map = (function(Entity, Enemy, General) {
         	this._blocks.push([]);
         }
 
-        this.loadBlocks(levelPatterns[0]);
+        this.loadBlocks(levelPatterns[params.level || 0]);
 	}
 
 	Map.inheritsFrom(Entity);

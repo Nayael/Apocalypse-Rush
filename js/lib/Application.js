@@ -42,6 +42,7 @@ var Application = (function(Stage) {
 			var index = this._activities.indexOf(activity);
 			if (index != -1) {
 				this._stage.removeScreen(activity.getScreen());
+				activity._screen = null;
 				this._activities.splice(index, 1);
 			}
 		};
