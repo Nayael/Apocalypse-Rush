@@ -44,6 +44,10 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 			radius: this.radius
 		});
 		if (collision != null) {
+			if (collision.value == 9) {
+				window.gameActivity._map.changeBlock(collision.pos[0], collision.pos[1], 0);
+				// window.gameActivity._map._blocks[collision.pos[0]][collision.pos[1]] = 0;
+			}
 			this.die();
 		}
 	}
