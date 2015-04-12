@@ -58,11 +58,15 @@ var Enemy = (function(Entity, Graphics) {
 		window.gameActivity.getScreen().addChild(bullet);
 	}
 
-	Enemy.prototype.die = function() {
+	Enemy.prototype.die = function(respawnX, killer) {
 		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
 		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
 		window.gameActivity.getScreen().removeChild(this);
+		if (killer) {
+			killer.points += 2;
+		}
 	}
+
 
 	Enemy.prototype.getBullet = function () {
 		if (window.bulletsPool.length == 0) {

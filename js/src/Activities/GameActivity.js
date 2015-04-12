@@ -110,7 +110,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	}
 
 	GameActivity.prototype.checkCollideWithPlayers = function () {
-		var bullet, player, playerX, playerY, character, characterX, characterY, respawnX;
+		var bullet, player, playerX, playerY, character, characterX, characterY, respawnX, killer;
 		var j = 0;
 		var characters = this._players.concat(this.enemies);
 		for (var i = 0; i < this.bullets.length; i++) {
@@ -130,8 +130,10 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 						} else {
 							respawnX = character.x + (-250 + Math.floor(Math.random() * 500));
 						}
+						// Points to the player
+						killer = this.getPlayer(bullet.owner);
 						bullet.die();
-						character.die(respawnX);
+						character.die(respawnX, killer);
 						break;
 					}
 				}
@@ -155,6 +157,12 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		}
 	}
 
+	GameActivity.prototype.onGeneralDead = function () {
+		for (var i = 0; i < this._players.length; i++) {
+			console.log('this._players[i].points: ', this._players[i].points);
+		}
+	}
+
 	GameActivity.prototype.getFirstPlayer = function () {
 		var firstPlayer = null;
 		for (var i = 0, xMax = 0, nbPlayers = this._players.length, player; i < nbPlayers; ++i) {
@@ -165,6 +173,15 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 			}
 		}
 		return firstPlayer;
+	}
+
+	GameActivity.prototype.getPlayer = function (id) {
+		for (var i = 0; i < this._players.length; i++) {
+			if (this._players[i].id == id) {
+				return this._players[i];
+			}
+		}
+		return;
 	}
 
 	return GameActivity;

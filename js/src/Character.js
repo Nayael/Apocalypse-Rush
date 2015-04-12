@@ -12,6 +12,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.previousX = this.x;
 		this.previousY = this.y;
 
+		this.points = 0;
+
 		this.speed = 5000;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
@@ -91,7 +93,8 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.removeFlag("canJump");
 		this.removeFlag("canShoot");
 		this.x = xPosition;
-		this.y = -100;
+		this.y = 0;
+		--this.points;
 
 		setTimeout((function() {
 			this.addFlag("canRun");
@@ -150,6 +153,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.xSpeed += this.xForce * dt;
 		this.ySpeed += this.yForce * dt;
 
+		this.y += 650;
 		this.y %= 650;
 	}
 
