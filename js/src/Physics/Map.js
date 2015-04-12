@@ -79,10 +79,11 @@ var Map = (function(Entity) {
 				value = pattern[i][j];
 				var enemy = null;
 
-				if (value == Consts.TYPES.ENEMY_LEFT) {
+				if (value == Consts.TYPES.ENEMY_LEFT || value == Consts.TYPES.ENEMY_RIGHT) {
 					enemy = new Enemy({
 						x: j * Consts.BLOCK_SIZE,
-						y: i * Consts.BLOCK_SIZE
+						y: i * Consts.BLOCK_SIZE,
+						faceRight: (value == Consts.TYPES.ENEMY_RIGHT)
 					});
 					window.gameActivity.enemies.push(enemy);
 					window.gameActivity._entities.push(enemy);

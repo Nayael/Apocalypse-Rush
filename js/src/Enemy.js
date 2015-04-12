@@ -14,14 +14,14 @@ var Enemy = (function(Entity, Graphics) {
 		this.height = 50;
 		this.isVulnerable = true;
 
-		this.faceRight = false;
+		this.faceRight = params.faceRight || false;
 		this.isCooldown = true;
 		this.shootCooldown = 1 + Math.random() * 2;
 		this.shootCooldownValue = 0;
 		this.id = -1;
 
 		this.graphics = new Graphics(this, {
-			spritesheet: AssetManager.instance.assets.images["enemy"]
+			spritesheet: AssetManager.instance.assets.images["enemy_" + (this.faceRight ? "right" : "left")]
 		});
 
 		window.gameActivity._screen.addChild(this);
