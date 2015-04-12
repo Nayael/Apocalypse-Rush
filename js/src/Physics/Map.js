@@ -73,9 +73,12 @@ var Map = (function(Entity) {
 	}
 
 	Map.prototype.loadBlocks = function (pattern) {
+		var value;
 		for (var i = 0; i < pattern.length; i++) {
 			for (var j = 0; j < pattern[i].length; j++) {
-				if (pattern[i][j] == 1) {
+				value = pattern[i][j];
+
+				if (value == Consts.TYPES.ENEMY_LEFT) {
 					window.gameActivity.enemies.push(new Enemy({
 						x: j * Consts.BLOCK_SIZE,
 						y: i * Consts.BLOCK_SIZE
@@ -83,7 +86,7 @@ var Map = (function(Entity) {
 					this._blocks[i].push(0);
 				}
 				else
-					this._blocks[i].push(pattern[i][j]);
+					this._blocks[i].push(value);
 			}
 		}
 
@@ -113,7 +116,7 @@ var Map = (function(Entity) {
 									Consts.BLOCK_SIZE);
 		}
 		this.context.drawImage(	this.textureTiles,
-								(block - 2) * Consts.BLOCK_SIZE,
+								(block - 1) * Consts.BLOCK_SIZE,
 								0,
 								Consts.BLOCK_SIZE,
 								Consts.BLOCK_SIZE,

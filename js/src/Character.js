@@ -308,7 +308,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 			return;
 		}
 
-		if (collisionPoint.value == 8) {
+		if (collisionPoint.value == Consts.TYPES.SPIKE) {
 			this.die(collisionPoint.x - Consts.SCREEN_WIDTH / 4);
 		}
 
