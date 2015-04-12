@@ -178,7 +178,7 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 	Character.prototype.onButtonUp = function (e) {
 		GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp);
-		if (e.button == "X") {
+		if (e.button == "X" && e.gamepad == this.id) {
 			this.shootCooldownValue = this.shootCooldown;
 		}
 	}
