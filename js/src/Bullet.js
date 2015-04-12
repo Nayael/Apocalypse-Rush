@@ -23,7 +23,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 	Bullet.inheritsFrom(Entity);
 
 	Bullet.prototype.init = function (owner) {
-		this.ttl = 0.5;
+		this.ttl = 2;
 		this.time = 0;
 		this.enabled = true;
 		this.owner = owner !== undefined ? owner : -1;

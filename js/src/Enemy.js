@@ -8,7 +8,6 @@ var Enemy = (function(Entity) {
 		}
 		Entity.apply(this, arguments);
 
-		console.log(params);
 		this.x = params.x;
 		this.y = params.y;
 

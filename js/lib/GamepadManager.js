@@ -215,6 +215,7 @@ var GamepadManager = (function(MakeEventDispatcher) {
 			return _controllers;
 		}
 	}
+	GamepadManager.GamepadEvent = GamepadEvent;	
 	GamepadManager.BUTTONS = ["A", "B", "X", "Y", "LB", "RB", "LT", "RT", "BACK", "START", "LEFT_JOYSTICK", "RIGHT_JOYSTICK", "UP", "DOWN", "LEFT", "RIGHT", "GUIDE"];
 
 	GamepadManager.prototype.getButtonName = function (id) {

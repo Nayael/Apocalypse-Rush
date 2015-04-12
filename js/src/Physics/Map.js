@@ -91,7 +91,6 @@ var Map = (function(Entity) {
 	};
 
 	Map.prototype.changeBlock = function (x, y, newBlock) {
-		console.log(arguments);
 		this._blocks[x][y] = newBlock;
 		this.renderBlock(y, x, newBlock, true);
 	};
