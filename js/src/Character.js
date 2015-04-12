@@ -68,6 +68,16 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.addFlag("canRun");
 		this.addFlag("canJump");
 		this.addFlag("canShoot");
+
+		this.cursorGraphics = {
+			graphics : new Graphics(this, {
+				spritesheet: AssetManager.instance.assets.images["cursor_p" + (id + 1)],
+				localX: 18,
+				localY: -40
+			}
+		)};
+
+		window.gameActivity._screen.addChild(this.cursorGraphics);
 	}
 
 	Character.prototype.die = function (xPosition) {
@@ -90,12 +100,14 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		}).bind(this), 1000);
 
 		var blink = setInterval(function () {
-			this.graphics.enabled = !this.graphics.enabled;
+			this.cursorGraphics.graphics.enabled = !this.cursorGraphics.graphics.enabled;
+			this.graphics.enabled = this.cursorGraphics.graphics.enabled;
 		}.bind(this), 150);
 
 		setTimeout((function() {
 			clearInterval(blink);
 			this.graphics.enabled = true;
+			this.cursorGraphics.graphics.enabled = true;
 			this.isVulnerable = true;
 		}).bind(this), 2500);
 	}
@@ -120,6 +132,12 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		this.applyMove(dt);
 		this.updatePhysics(dt);
 		this.handleAnim();
+
+		this.renderCursor();
+	}
+
+	Character.prototype.renderCursor = function () {
+		
 	}
 
 	Character.prototype.updatePhysics = function (dt) {

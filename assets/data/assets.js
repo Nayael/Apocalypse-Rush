@@ -46,7 +46,11 @@ var assets = (function() {
             "bloc_tuile": ["assets/textures/blocs/bloc_tuile.png", 'game'],
             "bloc_muraille": ["assets/textures/blocs/bloc_muraille.png", 'game'],
             "bloc_muraille_haut": ["assets/textures/blocs/bloc_muraille_haut.png", 'game'],
-            "bullet": ["assets/textures/bullet.png", 'game']
+            "bullet": ["assets/textures/bullet.png", 'game'],
+            "cursor_p1": ["assets/textures/cursor_p1.png", 'game'],
+            "cursor_p2": ["assets/textures/cursor_p2.png", 'game'],
+            "cursor_p3": ["assets/textures/cursor_p3.png", 'game'],
+            "cursor_p4": ["assets/textures/cursor_p4.png", 'game']
         },
         "atlases": {
             // "young_woman": ["assets/textures/game/characters/young_woman", "game"]
