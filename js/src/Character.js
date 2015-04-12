@@ -169,9 +169,17 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 		if (this.hasFlag("canShoot")) {
 			this.removeFlag("shooting");
 			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("X"))) {
+				GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp, this);
 				this.shoot();
 				this.addFlag("shooting");
 			}
+		}
+	}
+
+	Character.prototype.onButtonUp = function (e) {
+		GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp);
+		if (e.button == "X") {
+			this.shootCooldownValue = this.shootCooldown;
 		}
 	}
 
