@@ -12,6 +12,7 @@ var assets = (function() {
             "logo" : ["assets/textures/logo.png", "menu"],
             "title" : ["assets/textures/title.png", "menu"],
             "pressStart" : ["assets/textures/pressStart.png", "menu"],
+            "credits" : ["assets/textures/credits.png", "menu"],
             "creditsLogo" : ["assets/textures/creditsLogo.png", "menu"],
             "creditsLogoBack" : ["assets/textures/creditsLogoBack.png", "menu"],
             "background" : ["assets/textures/background.png", "menu"],

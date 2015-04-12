@@ -9,7 +9,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 		Entity.apply(this, arguments);
 
 		this.radius = 5;
-		this.ttl = 0.3;
+		this.ttl = 0.45;
 		this.time = 0;
 		this.direction = 1;
 		this.speed = 20;
@@ -23,7 +23,7 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 	Bullet.inheritsFrom(Entity);
 
 	Bullet.prototype.init = function (owner) {
-		this.ttl = 0.3;
+		this.ttl = 0.45;
 		this.time = 0;
 		this.enabled = true;
 		this.owner = owner !== undefined ? owner : -1;

@@ -225,6 +225,12 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
             })
         };
 
+        this.credits = {
+            graphics: new Graphics({x: Consts.SCREEN_WIDTH / 2 - AssetManager.instance.assets.images.credits.width / 2, y: Consts.SCREEN_HEIGHT - AssetManager.instance.assets.images.credits.height - 20}, {
+                spritesheet: AssetManager.instance.assets.images.credits,
+            })
+        };
+
         this.creditsLogo = {
             graphics: new Graphics({x: Consts.SCREEN_WIDTH - AssetManager.instance.assets.images.creditsLogo.width - 20, y: Consts.SCREEN_HEIGHT - AssetManager.instance.assets.images.creditsLogo.height - 20}, {
                 spritesheet: AssetManager.instance.assets.images.creditsLogo,
@@ -252,7 +258,6 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     MainActivity.prototype.showMenu = function () {
         this._screen.addChild(this.pressStart);
         this._screen.addChild(this.creditsLogo);
-        this._screen.removeChild(this.creditsLogoBack);
 
         // Blink press start
         var blink = setInterval(function () {
@@ -278,6 +283,7 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     MainActivity.prototype.showCredits = function () {
         this._screen.removeChild(this.pressStart);
         this._screen.removeChild(this.creditsLogo);
+        this._screen.addChild(this.credits);
         this._screen.addChild(this.creditsLogoBack);
         GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
         
@@ -291,10 +297,20 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     }
 
     MainActivity.prototype.hideCredits = function () {
-        
+        this._screen.removeChild(this.creditsLogoBack);
+        this._screen.removeChild(this.credits);
     }
 
     MainActivity.prototype.startGame = function () {
+        this.loading_bar_outside = null;
+        this.loading_bar_inside = null;
+        this.title = null;
+        this.pressStart = null;
+        this.logo = null;
+        this.creditsLogo = null;
+        this.creditsLogoBack = null;
+        this.credits = null;
+        
         window.gameActivity = new GameActivity({
             level: 0
         });
