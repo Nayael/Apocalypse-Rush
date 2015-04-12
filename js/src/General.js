@@ -13,6 +13,7 @@ var General = (function(Entity, Graphics) {
 		this.width = 50;
 		this.height = 50;
 		this.isVulnerable = true;
+		this.hp = 20;
 
 		this.faceRight = params.faceRight || false;
 		this.isCooldown = true;
@@ -59,9 +60,28 @@ var General = (function(Entity, Graphics) {
 	}
 
 	General.prototype.die = function() {
-		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
-		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
-		window.gameActivity.getScreen().removeChild(this);
+		--this.hp;
+		if (this.hp <= 0) {
+			// window.gameActivity.onGeneralDead();
+			window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
+			window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
+			window.gameActivity.getScreen().removeChild(this);
+		} else {
+			// this.isVulnerable = false;
+
+			if (!this.blink) {
+				this.blink = setInterval(function () {
+					this.graphics.enabled = !this.graphics.enabled;
+				}.bind(this), 150);
+			}
+
+			setTimeout((function() {
+				clearInterval(this.blink);
+				this.blink = 0;
+				this.graphics.enabled = true;
+				this.isVulnerable = true;
+			}).bind(this), 2500);
+		}
 	}
 
 	General.prototype.getBullet = function () {
