@@ -13,6 +13,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		this.bullets = [];
 		this.bomb = null;
 		this.enemies = [];
+		this.generals = [];
 		this.level = params ? params.level : 0;
 	}
 	GameActivity.inheritsFrom(Activity);
@@ -182,7 +183,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 		}
 	}
 
-	GameActivity.prototype.onGeneralDead = function () {
+	GameActivity.prototype.onGeneralsDead = function () {
 		this.ui.showLeaderboard();
 		GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard, this);
 	}
@@ -238,7 +239,7 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 	    this._assets = null;
 
 		window.gameActivity = new GameActivity({
-            level: 1
+            level: this.level == 0 ? 1 : 0
         });
 	    this.application.addActivity(window.gameActivity);
 	    window.gameActivity.launch(assets);

@@ -58,7 +58,7 @@ var Enemy = (function(Entity, Graphics) {
 		window.gameActivity.getScreen().addChild(bullet);
 	}
 
-	Enemy.prototype.die = function(respawnX, killer) {
+	Enemy.prototype.die = function(respawn, killer) {
 		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
 		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
 		window.gameActivity.getScreen().removeChild(this);

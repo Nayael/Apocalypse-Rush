@@ -65,11 +65,17 @@ var Map = (function(Entity, Enemy, General) {
 	}
 
 	Map.prototype.checkPlayersPosition = function () {
-		for (var i = this.activity._players.length; i--;) {
+		var i = 0;
+		for (i = this.activity._players.length; i--;) {
 			if (this.activity._players[i].x < this.cameraOffset) {
 				this.activity._players[i].die({
 					x: this.cameraOffset + 960
 				});
+			}
+		}
+		for (i = this.activity.enemies.length; i--;) {
+			if (this.activity.enemies[i].x < this.cameraOffset) {
+				this.activity.enemies[i].die();
 			}
 		}
 	}
@@ -97,6 +103,7 @@ var Map = (function(Entity, Enemy, General) {
 						faceRight: (value == Consts.TYPES.GENERAL_RIGHT)
 					});
 					window.gameActivity.enemies.push(enemy);
+					window.gameActivity.generals.push(enemy);
 					window.gameActivity._entities.push(enemy);
 					this._blocks[i].push(0);
 				} else {
