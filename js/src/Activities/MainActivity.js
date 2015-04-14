@@ -1,5 +1,5 @@
-define(['lib/Framework/Activity', 'Howl', 'src/Consts', 'lib/Framework/AssetManager', 'lib/Utils', 'lib/Framework/GamepadManager', 'Keyboard', 'lib/Framework/Entity', 'lib/Framework/Graphics'],
-function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, Entity, Graphics) {
+define(['lib/Framework/Activity', 'src/Activities/GameActivity', 'Howl', 'src/Consts', 'lib/Framework/AssetManager', 'lib/Utils', 'lib/Framework/GamepadManager', 'Keyboard', 'lib/Framework/Entity', 'lib/Framework/Graphics'],
+function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, Entity, Graphics) {
 	'use strict';
 
 	function MainActivity(params) {
@@ -318,20 +318,34 @@ function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, 
             this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
         }.bind(this), 600);
 
+        Keyboard.on('keydown', 'SPACE', onStartButtonPressed.bind(this));
+        Keyboard.on('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
         GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
 
         function onButtonDown (e) {
             if (e.button == "START") {
-                clearInterval(blink);
-                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
-                this._assets.sounds["HUD_Click"].play();
-                this.startGame();
+                onStartButtonPressed(e);
             }
             if (e.button == "BACK") {
-                clearInterval(blink);
-                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
-                this.showCredits();
+                onBackButtonPressed(e);
             }
+        }
+
+        function onStartButtonPressed (e) {
+            clearInterval(blink);
+            Keyboard.remove('keydown', 'SPACE', onStartButtonPressed.bind(this));
+            Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
+            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+            this._assets.sounds["HUD_Click"].play();
+            this.startGame();
+        }
+
+        function onBackButtonPressed (e) {
+            clearInterval(blink);
+            Keyboard.remove('keydown', 'SPACE', onStartButtonPressed.bind(this));
+            Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
+            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+            this.showCredits();
         }
     }
 
@@ -343,13 +357,19 @@ function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, 
         this._screen.addChild(this.credits);
         this._screen.addChild(this.creditsLogoBack);
         GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
+        Keyboard.on('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
         
         function onButtonDown (e) {
             if (e.button == "BACK") {
-                GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
-                this.hideCredits();
-                this.showMenu();
+                onBackButtonPressed(e);
             }
+        }
+        
+        function onBackButtonPressed (e) {
+            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+            Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
+            this.hideCredits();
+            this.showMenu();
         }
     }
 

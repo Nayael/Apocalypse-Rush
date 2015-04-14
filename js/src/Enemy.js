@@ -1,4 +1,5 @@
-define(['lib/Framework/Entity', 'lib/Framework/Graphics'], function(Entity, Graphics) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager'],
+function(Entity, Graphics, AssetManager) {
 	'use strict';
 
 	function Enemy(params) {

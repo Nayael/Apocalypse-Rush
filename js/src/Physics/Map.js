@@ -1,5 +1,5 @@
-define(['lib/Framework/Entity', 'src/Enemy', 'src/General'],
-function(Entity, Enemy, General) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager', 'src/Consts', 'src/Enemy', 'src/General'],
+function(Entity, Graphics, AssetManager, Consts, Enemy, General) {
 	'use strict';
 
 	function Map(params) {

@@ -17,6 +17,7 @@ require.config({
 			exports: "PxLoader"
 		},
 		'PxLoaderImage': {
+			deps: ['PxLoader'],
 			exports: "PxLoaderImage"
 		}
 	}
