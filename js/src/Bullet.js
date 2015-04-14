@@ -27,7 +27,7 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 		this.time = 0;
 		this.enabled = true;
 		this.owner = owner !== undefined ? owner : -1;
-		window.gameActivity.bullets.push(this);
+		this.activity.bullets.push(this);
 	}
 
 	Bullet.prototype.update = function (dt) {
@@ -38,7 +38,7 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 		}
 		this.x += this.speed * this.direction;
 
-		var collision = window.gameActivity._map.checkCollision({
+		var collision = this.activity._map.checkCollision({
 			x: this.x,
 			y: this.y,
 			radius: this.radius
@@ -49,8 +49,8 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 				if (player) {
 					player.addPoints(1);
 				}
-				window.gameActivity._map.changeBlock(collision.pos[0], collision.pos[1], 0);
-				// window.gameActivity._map._blocks[collision.pos[0]][collision.pos[1]] = 0;
+				this.activity._map.changeBlock(collision.pos[0], collision.pos[1], 0);
+				// this.activity._map._blocks[collision.pos[0]][collision.pos[1]] = 0;
 			}
 			this.die();
 		}
@@ -59,10 +59,10 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 	Bullet.prototype.die = function() {
 		this.enabled = false;
 		this.time = 0;
-		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
-		window.gameActivity.bullets.splice(window.gameActivity.bullets.indexOf(this), 1);
-		window.gameActivity.getScreen().removeChild(this);
-		window.bulletsPool.push(this);
+		this.activity._entities.splice(this.activity._entities.indexOf(this), 1);
+		this.activity.bullets.splice(this.activity.bullets.indexOf(this), 1);
+		this.activity.getScreen().removeChild(this);
+		this.activity.bulletsPool.push(this);
 	}
 
 	return Bullet;

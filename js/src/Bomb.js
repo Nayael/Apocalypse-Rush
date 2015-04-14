@@ -15,8 +15,8 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 			localY: -spritesheet.height / 2
 		});
 		this.speed = 20;
-		this.alarm = window.gameActivity._assets.sounds.SFX_Missile_Siren_Coming;
-		this.missileSound = window.gameActivity._assets.sounds.SFX_Feedback_Missile;
+		this.alarm = this.activity._assets.sounds.SFX_Missile_Siren_Coming;
+		this.missileSound = this.activity._assets.sounds.SFX_Feedback_Missile;
 		this.alarm.volume(0.8);
 
 		this.moving = false;

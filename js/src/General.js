@@ -26,7 +26,7 @@ function(Entity, Graphics, AssetManager) {
 			spritesheet: AssetManager.instance.assets.images["general_" + (this.faceRight ? "right" : "left")]
 		});
 
-		window.gameActivity._screen.addChild(this);
+		this.activity._screen.addChild(this);
 	}
 
 	General.inheritsFrom(Entity);
@@ -56,8 +56,8 @@ function(Entity, Graphics, AssetManager) {
 		bullet.y = this.y + 25;
 		bullet.init();
 		bullet.ttl = 0.6;
-		window.gameActivity._entities.push(bullet);
-		window.gameActivity.getScreen().addChild(bullet);
+		this.activity._entities.push(bullet);
+		this.activity.getScreen().addChild(bullet);
 	}
 
 	General.prototype.die = function(respawn, killer) {
@@ -66,13 +66,13 @@ function(Entity, Graphics, AssetManager) {
 			if (killer) {
 				killer.addPoints(15);
 			}
-			window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
-			window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
-			window.gameActivity.generals.splice(window.gameActivity.generals.indexOf(this), 1);
-			window.gameActivity.getScreen().removeChild(this);
+			this.activity._entities.splice(this.activity._entities.indexOf(this), 1);
+			this.activity.enemies.splice(this.activity.enemies.indexOf(this), 1);
+			this.activity.generals.splice(this.activity.generals.indexOf(this), 1);
+			this.activity.getScreen().removeChild(this);
 
-			if (window.gameActivity.generals.length == 0) {
-				window.gameActivity.onGeneralsDead();
+			if (this.activity.generals.length == 0) {
+				this.activity.onGeneralsDead();
 			}
 		} else {
 			// this.isVulnerable = false;
@@ -93,10 +93,12 @@ function(Entity, Graphics, AssetManager) {
 	}
 
 	General.prototype.getBullet = function () {
-		if (window.bulletsPool.length == 0) {
-			return new Bullet();
+		if (this.activity.bulletsPool.length == 0) {
+			return new Bullet({
+				activity: this.activity
+			});
 		}
-		return window.bulletsPool.splice(0, 1)[0];
+		return this.activity.bulletsPool.splice(0, 1)[0];
 	}
 
 	return General;

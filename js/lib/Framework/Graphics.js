@@ -74,7 +74,7 @@ define(['lib/Framework/MakeEventDispatcher'], function (MakeEventDispatcher) {
                                     0,
                                     this.spriteWidth,
                                     this.spriteHeight,
-                                    (this.stageX - (window.gameActivity ? gameActivity._map.cameraOffset : 0)) * context.canvas.scaleFactor,
+                                    (this.stageX - ((this.entity && this.entity.activity) ? this.entity.activity._map.cameraOffset : 0)) * context.canvas.scaleFactor,
                                     this.stageY * context.canvas.scaleFactor,
                                     this.spriteWidth * context.canvas.scaleFactor,
                                     this.spriteHeight * context.canvas.scaleFactor);

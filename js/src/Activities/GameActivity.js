@@ -12,6 +12,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 		this._assets = {};
 		this._players = [];
 		this.bullets = [];
+		this.bulletsPool = [];
 		this.bomb = null;
 		this.enemies = [];
 		this.generals = [];
@@ -28,7 +29,9 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 
 	GameActivity.prototype.launchGame = function() {
 		this.ui = new UI(this._players.length);
-		this.bomb = new Bomb();
+		this.bomb = new Bomb({
+			activity: this
+		});
 		this._entities.push(this.bomb);
 
 		this._assets.sounds["MUSIC_Layer_01"].play();
@@ -49,6 +52,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 				break;
 			}
 			character = new Character({
+				activity: this,
 				sprites: {
 					idle_l: this._assets.images["player_" + i + "-idle_l"],
 					idle_r: this._assets.images["player_" + i + "-idle_r"],
@@ -222,7 +226,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	}
 
 	GameActivity.prototype.nextLevel = function() {
-		window.gameActivity = null;
+		// window.gameActivity = null;
 	    this.application.removeActivity(this);
 	    this._entities.length = 0;
 	    this._players.length = 0;
@@ -243,11 +247,11 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	    var assets = this._assets;
 	    this._assets = null;
 
-		window.gameActivity = new GameActivity({
+		var gameActivity = new GameActivity({
             level: this.level == 0 ? 1 : 0
         });
-	    this.application.addActivity(window.gameActivity);
-	    window.gameActivity.launch(assets);
+	    this.application.addActivity(gameActivity);
+	    gameActivity.launch(assets);
 	}
 
 	return GameActivity;

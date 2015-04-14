@@ -114,20 +114,22 @@ function(Entity, Graphics, AssetManager, Consts, Enemy, General) {
 					enemy = new Enemy({
 						x: j * Consts.BLOCK_SIZE,
 						y: i * Consts.BLOCK_SIZE,
-						faceRight: (value == Consts.TYPES.ENEMY_RIGHT)
+						faceRight: (value == Consts.TYPES.ENEMY_RIGHT),
+						activity: this.activity
 					});
-					window.gameActivity.enemies.push(enemy);
-					window.gameActivity._entities.push(enemy);
+					this.activity.enemies.push(enemy);
+					this.activity._entities.push(enemy);
 					this._blocks[i].push(0);
 				} else if (value == Consts.TYPES.GENERAL_LEFT || value == Consts.TYPES.GENERAL_RIGHT) {
 					enemy = new General({
 						x: j * Consts.BLOCK_SIZE,
 						y: i * Consts.BLOCK_SIZE,
-						faceRight: (value == Consts.TYPES.GENERAL_RIGHT)
+						faceRight: (value == Consts.TYPES.GENERAL_RIGHT),
+						activity: this.activity
 					});
-					window.gameActivity.enemies.push(enemy);
-					window.gameActivity.generals.push(enemy);
-					window.gameActivity._entities.push(enemy);
+					this.activity.enemies.push(enemy);
+					this.activity.generals.push(enemy);
+					this.activity._entities.push(enemy);
 					this._blocks[i].push(0);
 				} else {
 					this._blocks[i].push(value);

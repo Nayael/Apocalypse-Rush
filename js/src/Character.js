@@ -1,7 +1,6 @@
 define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib/Framework/Graphics'], function(Entity, Keyboard, GamepadManager, Graphics) {
 	'use strict';
 
-	window.bulletsPool = [];
 	function Character(params) {
 		// enforces new
 		if (!(this instanceof Character)) {
@@ -79,7 +78,7 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 			}
 		)};
 
-		window.gameActivity._screen.addChild(this.cursorGraphics);
+		this.activity._screen.addChild(this.cursorGraphics);
 	}
 
 	Character.prototype.addPoints = function (value) {
@@ -101,7 +100,7 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 		if (!this.isVulnerable) {
 			return;
 		}
-		window.gameActivity._assets.sounds["SFX_Impact_Hit_Player_0" + (this.id + 1)].play();
+		this.activity._assets.sounds["SFX_Impact_Hit_Player_0" + (this.id + 1)].play();
 
 		this.isVulnerable = false;
 		this.removeFlag("canRun");
@@ -344,7 +343,7 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 
 	Character.prototype.jump = function () {
 		this.ySpeed = -800;
-		window.gameActivity._assets.sounds["SFX_Jump_Player_0" + (this.id + 1)].play();
+		this.activity._assets.sounds["SFX_Jump_Player_0" + (this.id + 1)].play();
 	}
 
 	Character.prototype.handleCollision = function (collisionPoint) {
@@ -395,20 +394,21 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 		bullet.x = this.x + this.width / 2 + (this.faceRight ? 50 : -50);
 		bullet.y = this.y + this.height * .4;
 		bullet.init(this.id);
-		window.gameActivity._entities.push(bullet);
-		window.gameActivity.getScreen().addChild(bullet);
+		this.activity._entities.push(bullet);
+		this.activity.getScreen().addChild(bullet);
 
-		window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].volume(0.6);
-		window.gameActivity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].play();
+		this.activity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].volume(0.6);
+		this.activity._assets.sounds["SFX_Shoot_Player_0" + (this.id + 1)].play();
 	}
 
 	Character.prototype.getBullet = function () {
-		if (window.bulletsPool.length == 0) {
+		if (this.activity.bulletsPool.length == 0) {
 			return new Bullet({
-				owner: this.id
+				owner: this.id,
+				activity: this.activity
 			});
 		}
-		return window.bulletsPool.splice(0, 1)[0];
+		return this.activity.bulletsPool.splice(0, 1)[0];
 	}
 
 	return Character;

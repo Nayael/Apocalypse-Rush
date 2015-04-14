@@ -25,7 +25,7 @@ function(Entity, Graphics, AssetManager) {
 			spritesheet: AssetManager.instance.assets.images["enemy_" + (this.faceRight ? "right" : "left")]
 		});
 
-		window.gameActivity._screen.addChild(this);
+		this.activity._screen.addChild(this);
 	}
 
 	Enemy.inheritsFrom(Entity);
@@ -55,14 +55,14 @@ function(Entity, Graphics, AssetManager) {
 		bullet.y = this.y + 25;
 		bullet.init();
 		bullet.ttl = 0.6;
-		window.gameActivity._entities.push(bullet);
-		window.gameActivity.getScreen().addChild(bullet);
+		this.activity._entities.push(bullet);
+		this.activity.getScreen().addChild(bullet);
 	}
 
 	Enemy.prototype.die = function(respawn, killer) {
-		window.gameActivity._entities.splice(window.gameActivity._entities.indexOf(this), 1);
-		window.gameActivity.enemies.splice(window.gameActivity.enemies.indexOf(this), 1);
-		window.gameActivity.getScreen().removeChild(this);
+		this.activity._entities.splice(this.activity._entities.indexOf(this), 1);
+		this.activity.enemies.splice(this.activity.enemies.indexOf(this), 1);
+		this.activity.getScreen().removeChild(this);
 		if (killer) {
 			killer.addPoints(2);
 		}
@@ -70,10 +70,12 @@ function(Entity, Graphics, AssetManager) {
 
 
 	Enemy.prototype.getBullet = function () {
-		if (window.bulletsPool.length == 0) {
-			return new Bullet();
+		if (this.activity.bulletsPool.length == 0) {
+			return new Bullet({
+				activity: this.activity
+			});
 		}
-		return window.bulletsPool.splice(0, 1)[0];
+		return this.activity.bulletsPool.splice(0, 1)[0];
 	}
 
 	return Enemy;
