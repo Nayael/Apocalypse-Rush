@@ -1,4 +1,4 @@
-var Stage = (function(MakeEventDispatcher, InputManager) {
+define(['lib/Framework/MakeEventDispatcher', 'lib/Framework/InputManager'], function(MakeEventDispatcher, InputManager) {
     'use strict';
 
     /**
@@ -52,8 +52,6 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         document.body.appendChild(this.canvas);
         this.canvas.width  *= this.canvas.scaleFactor;
         this.canvas.height *= this.canvas.scaleFactor;
-        // this.canvas.style.width  = width + 'px';
-        // this.canvas.style.height = height + 'px';
 
         // Screen Handling
         this.screen = null;
@@ -67,8 +65,6 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         this.canvasBuffer.scaleFactor = width / stageWidth;
         this.canvasBuffer.width    = stageWidth;
         this.canvasBuffer.height   = stageHeight;
-        // this.canvasBuffer.style.width  = width + 'px';
-        // this.canvasBuffer.style.height = height + 'px';
 
         this.canvasBuffer.width    *= this.canvas.scaleFactor;
         this.canvasBuffer.height   *= this.canvas.scaleFactor;
@@ -94,7 +90,6 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
         };
 
         this.removeScreen = function(s) {
-            // console.log('s: ', s);
             var index = _screens.indexOf(s);
             if (index != -1) {
                 _screens.splice(index, 1);
@@ -206,4 +201,4 @@ var Stage = (function(MakeEventDispatcher, InputManager) {
 
     return Stage;
 
-})(MakeEventDispatcher, InputManager);
+});

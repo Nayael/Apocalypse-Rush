@@ -1,4 +1,4 @@
-var Bomb = (function(Entity, Graphics, AssetManager) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Entity, Graphics, AssetManager) {
 	'use strict';
 
 	function Bomb(params) {
@@ -66,4 +66,4 @@ var Bomb = (function(Entity, Graphics, AssetManager) {
 	}
 
 	return Bomb;
-}(Entity, Graphics, AssetManager));
+});

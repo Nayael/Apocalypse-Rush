@@ -1,4 +1,4 @@
-var GamepadManager = (function(MakeEventDispatcher) {
+define(['lib/Framework/MakeEventDispatcher'], function (MakeEventDispatcher) {
 	'use strict';
 
 
@@ -230,4 +230,4 @@ var GamepadManager = (function(MakeEventDispatcher) {
 	GamepadManager.instance = new GamepadManager();
 	return GamepadManager;
 	
-}(MakeEventDispatcher));
+});

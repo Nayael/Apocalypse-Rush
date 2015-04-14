@@ -1,4 +1,4 @@
-var Graphics = (function (MakeEventDispatcher) {
+define(['lib/Framework/MakeEventDispatcher'], function (MakeEventDispatcher) {
     'use strict';
 
     /**
@@ -97,4 +97,4 @@ var Graphics = (function (MakeEventDispatcher) {
 
     return Graphics;
 
-})(MakeEventDispatcher);
+});

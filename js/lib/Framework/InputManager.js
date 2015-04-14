@@ -1,4 +1,4 @@
-var InputManager = (function (MakeEventDispatcher) {
+define(['lib/Framework/MakeEventDispatcher'], function (MakeEventDispatcher) {
     'use strict';
 
     ////////////
@@ -245,4 +245,4 @@ var InputManager = (function (MakeEventDispatcher) {
     InputManager.instance = new InputManager();
     return InputManager;
 
-})(MakeEventDispatcher);
+});

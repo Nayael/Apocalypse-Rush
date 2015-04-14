@@ -1,4 +1,5 @@
-var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager) {
+define(['lib/Framework/Activity', 'Howl', 'src/Consts', 'lib/Framework/AssetManager', 'lib/Utils', 'lib/Framework/GamepadManager', 'Keyboard', 'lib/Framework/Entity', 'lib/Framework/Graphics'],
+function(Activity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, Entity, Graphics) {
 	'use strict';
 
 	function MainActivity(params) {
@@ -9,15 +10,14 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
 		Activity.apply(this, params);
 
 		this._assets = assets;
-	    this.loader = new PxLoader();
         this.loading_bar_outside = null;
-        this.loading_bar_inside = null;
-        this.title = null;
-        this.pressStart = null;
-        this.logo = null;
-        this.creditsLogo = null;
-        this.creditsLogoBack = null;
-        this.credits = null;
+        this.loading_bar_inside  = null;
+        this.title               = null;
+        this.pressStart          = null;
+        this.logo                = null;
+        this.creditsLogo         = null;
+        this.creditsLogoBack     = null;
+        this.credits             = null;
 	}
 	MainActivity.inheritsFrom(Activity);
 
@@ -32,15 +32,17 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
 	 * Preloads the assets
 	 */
 	MainActivity.prototype.onLoadingScreenLoaded = function(e) {
+        AssetManager.instance.removeListener(AssetManager.LOADING_COMPLETE, this.onLoadingScreenLoaded);
+
         this.loading_bar_outside = new Entity({
-        	graphics: new Graphics(null, {
+            graphics: new Graphics(null, {
                 spritesheet: AssetManager.instance.assets.images['loading_bar_outside']
-        	})
+            })
         });
         this.loading_bar_inside  = new Entity({
-        	graphics: new Graphics(null, {
+            graphics: new Graphics(null, {
                 spritesheet: AssetManager.instance.assets.images['loading_bar_inside']
-        	})
+            })
         });
         var barTotalWidth = this.loading_bar_inside.graphics.spriteWidth + 0;
         this.loading_bar_inside.graphics.spriteWidth = 0;
@@ -52,8 +54,6 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
         this._screen.addChild(this.loading_bar_outside);
         this._screen.addChild(this.loading_bar_inside);
 
-        AssetManager.instance.removeListener(AssetManager.LOADING_COMPLETE, this.onLoadingScreenLoaded);
-
         AssetManager.instance.enqueueAssets(this._assets);
         AssetManager.instance.addListener(AssetManager.LOADING_COMPLETE, onImagesLoadingComplete, this);
         AssetManager.instance.loadAll(updateLoadingScreen.bind(this));
@@ -62,30 +62,30 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
             this.loading_bar_inside.graphics.spriteWidth = barTotalWidth * (e.completedCount / e.totalCount);
         };
 
-	 	var nbLoadedSounds = 0;
-	 	var soundLoadComplete = false;
-	 	var imagesLoadComplete = false;
-	    this._assets.sounds = {
+        var nbLoadedSounds = 0;
+        var soundLoadComplete = false;
+        var imagesLoadComplete = false;
+        this._assets.sounds = {
             MUSIC_Layer_01: new Howl({
-            	src: ['assets/audio/MUSIC/MUSIC_Layer_01.ogg'],
+                src: ['assets/audio/MUSIC/MUSIC_Layer_01.ogg'],
                 preload: true,
                 loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
             MUSIC_Layer_02: new Howl({
-            	src: ['assets/audio/MUSIC/MUSIC_Layer_02.ogg'],
+                src: ['assets/audio/MUSIC/MUSIC_Layer_02.ogg'],
                 preload: true,
                 loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
             MUSIC_Layer_03: new Howl({
-            	src: ['assets/audio/MUSIC/MUSIC_Layer_03.ogg'],
+                src: ['assets/audio/MUSIC/MUSIC_Layer_03.ogg'],
                 preload: true,
                 loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
             MUSIC_Layer_04: new Howl({
-            	src: ['assets/audio/MUSIC/MUSIC_Layer_04.ogg'],
+                src: ['assets/audio/MUSIC/MUSIC_Layer_04.ogg'],
                 preload: true,
                 loop: true,
                 onload: onSoundLoaded.bind(this)
@@ -121,91 +121,91 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Feedback_Missile: new Howl({
-            	src: ['assets/audio/SFX/SFX_Feedback_Missile.ogg'],
+                src: ['assets/audio/SFX/SFX_Feedback_Missile.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Impact_Hit_Player_01: new Howl({
-            	src: ['assets/audio/SFX/SFX_Impact_Hit_Player_01.ogg'],
+                src: ['assets/audio/SFX/SFX_Impact_Hit_Player_01.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Impact_Hit_Player_02: new Howl({
-            	src: ['assets/audio/SFX/SFX_Impact_Hit_Player_02.ogg'],
+                src: ['assets/audio/SFX/SFX_Impact_Hit_Player_02.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Impact_Hit_Player_03: new Howl({
-            	src: ['assets/audio/SFX/SFX_Impact_Hit_Player_03.ogg'],
+                src: ['assets/audio/SFX/SFX_Impact_Hit_Player_03.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Impact_Hit_Player_04: new Howl({
-            	src: ['assets/audio/SFX/SFX_Impact_Hit_Player_04.ogg'],
+                src: ['assets/audio/SFX/SFX_Impact_Hit_Player_04.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Impact_Siren_01: new Howl({
-            	src: ['assets/audio/SFX/SFX_Impact_Siren_01.ogg'],
+                src: ['assets/audio/SFX/SFX_Impact_Siren_01.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Jump_Player_01: new Howl({
-            	src: ['assets/audio/SFX/SFX_Jump_Player_01.ogg'],
+                src: ['assets/audio/SFX/SFX_Jump_Player_01.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Jump_Player_02: new Howl({
-            	src: ['assets/audio/SFX/SFX_Jump_Player_02.ogg'],
+                src: ['assets/audio/SFX/SFX_Jump_Player_02.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Jump_Player_03: new Howl({
-            	src: ['assets/audio/SFX/SFX_Jump_Player_03.ogg'],
+                src: ['assets/audio/SFX/SFX_Jump_Player_03.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Jump_Player_04: new Howl({
-            	src: ['assets/audio/SFX/SFX_Jump_Player_04.ogg'],
+                src: ['assets/audio/SFX/SFX_Jump_Player_04.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Missile_Siren_Coming: new Howl({
-            	src: ['assets/audio/SFX/SFX_Missile_Siren_Coming_Loop.ogg'],
+                src: ['assets/audio/SFX/SFX_Missile_Siren_Coming_Loop.ogg'],
                 preload: true,
                 loop: true,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Shoot_Player_01: new Howl({
-            	src: ['assets/audio/SFX/SFX_Shoot_Player_01.ogg'],
+                src: ['assets/audio/SFX/SFX_Shoot_Player_01.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Shoot_Player_02: new Howl({
-            	src: ['assets/audio/SFX/SFX_Shoot_Player_02.ogg'],
+                src: ['assets/audio/SFX/SFX_Shoot_Player_02.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Shoot_Player_03: new Howl({
-            	src: ['assets/audio/SFX/SFX_Shoot_Player_03.ogg'],
+                src: ['assets/audio/SFX/SFX_Shoot_Player_03.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             }),
             SFX_Shoot_Player_04: new Howl({
-            	src: ['assets/audio/SFX/SFX_Shoot_Player_04.ogg'],
+                src: ['assets/audio/SFX/SFX_Shoot_Player_04.ogg'],
                 preload: true,
                 loop: false,
                 onload: onSoundLoaded.bind(this)
@@ -222,27 +222,28 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
                 loop: false,
                 onload: onSoundLoaded.bind(this)
             })
-	    };
+        };
 
-	    function onSoundLoaded () {
-	 		++nbLoadedSounds;
-	 		if (nbLoadedSounds >= Utils.objectLength(this._assets.sounds)) {
-	 			soundLoadComplete = true;
-	 			if (imagesLoadComplete) {
-	 				this.onLoadingFinished();
-	 			}
-	 		}
-	    }
+        function onSoundLoaded () {
+            ++nbLoadedSounds;
+            if (nbLoadedSounds >= Utils.objectLength(this._assets.sounds)) {
+                soundLoadComplete = true;
+                if (imagesLoadComplete) {
+                    this.onLoadingFinished();
+                }
+            }
+        }
 
-	    function onImagesLoadingComplete (e) {
-	    	imagesLoadComplete = true;
-			if (soundLoadComplete) {
-				this.onLoadingFinished();
-			}
-	    }
-	}
+        function onImagesLoadingComplete (e) {
+        AssetManager.instance.removeListener(AssetManager.LOADING_COMPLETE, onImagesLoadingComplete);
+            imagesLoadComplete = true;
+            if (soundLoadComplete) {
+                this.onLoadingFinished();
+            }
+        }
+    }
 
-	MainActivity.prototype.onLoadingFinished = function (e) {
+    MainActivity.prototype.onLoadingFinished = function (e) {
         this._screen.removeChild(this.loading_bar_outside);
         this._screen.removeChild(this.loading_bar_inside);
 
@@ -389,4 +390,4 @@ var MainActivity = (function(Activity, Howl, Consts, AssetManager, Utils, Gamepa
     }
 
 	return MainActivity;
-}(Activity, Howl, Consts, AssetManager, Utils, GamepadManager));
+});

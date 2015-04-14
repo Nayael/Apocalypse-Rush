@@ -1,4 +1,4 @@
-var AssetManager = (function(MakeEventDispatcher, PxLoader, PxLoaderImage) {
+define(['lib/Framework/MakeEventDispatcher', 'PxLoader', 'PxLoaderImage'], function(MakeEventDispatcher, PxLoader, PxLoaderImage) {
     'use strict';
 
     /**
@@ -81,7 +81,6 @@ var AssetManager = (function(MakeEventDispatcher, PxLoader, PxLoaderImage) {
         }
 
         _pxLoader.addCompletionListener(function(e) {
-            console.log('loading finished');
             AssetManager.instance.dispatch(AssetManager.LOADING_COMPLETE);
         });
 
@@ -123,4 +122,4 @@ var AssetManager = (function(MakeEventDispatcher, PxLoader, PxLoaderImage) {
     AssetManager.instance = new AssetManager();
     return AssetManager;
 
-}) (MakeEventDispatcher, PxLoader, PxLoaderImage);
+});

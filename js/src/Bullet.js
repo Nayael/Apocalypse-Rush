@@ -1,4 +1,4 @@
-var Bullet = (function(Entity, Graphics, AssetManager) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Entity, Graphics, AssetManager) {
 	'use strict';
 
 	function Bullet(params) {
@@ -67,4 +67,4 @@ var Bullet = (function(Entity, Graphics, AssetManager) {
 
 	return Bullet;
 
-}(Entity, Graphics, AssetManager));
+});

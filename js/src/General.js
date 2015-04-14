@@ -1,4 +1,4 @@
-var General = (function(Entity, Graphics) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics'], function(Entity, Graphics) {
 	'use strict';
 
 	function General(params) {
@@ -99,4 +99,4 @@ var General = (function(Entity, Graphics) {
 	}
 
 	return General;
-}(Entity, Graphics));
+});

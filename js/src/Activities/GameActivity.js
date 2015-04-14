@@ -1,4 +1,5 @@
-var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb, Consts, UI) {
+define(['lib/Framework/Activity', 'PxLoader', 'PxLoaderImage', 'lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/InputManager', 'src/Character', 'lib/Framework/GamepadManager', 'src/Bomb', 'src/Consts', 'src/UI'],
+function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb, Consts, UI) {
 	'use strict';
 
 	function GameActivity(params) {
@@ -251,4 +252,4 @@ var GameActivity = (function(Activity, PxLoader, PxLoaderImage, Entity, Graphics
 
 	return GameActivity;
 
-}(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManager, Character, GamepadManager, Bomb, Consts, UI));
+});

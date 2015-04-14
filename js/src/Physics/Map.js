@@ -1,4 +1,5 @@
-var Map = (function(Entity, Enemy, General) {
+define(['lib/Framework/Entity', 'src/Enemy', 'src/General'],
+function(Entity, Enemy, General) {
 	'use strict';
 
 	function Map(params) {
@@ -256,4 +257,4 @@ var Map = (function(Entity, Enemy, General) {
 	};
 
 	return Map;
-}(Entity, Enemy, General));
+});

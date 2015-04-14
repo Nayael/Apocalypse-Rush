@@ -1,4 +1,4 @@
-var MakeEventDispatcher = (function() {
+define(function() {
     'use strict';
 
     var MakeEventDispatcher = function(object) {
@@ -12,6 +12,7 @@ var MakeEventDispatcher = (function() {
             if (!this.listenersFor[eventName]) {
                 this.listenersFor[eventName] = [];
             }
+
             // We add the callback to the list of listeners on this event
             this.listenersFor[eventName].push({
                 callback: callback,
@@ -48,5 +49,4 @@ var MakeEventDispatcher = (function() {
     }
 
     return MakeEventDispatcher;
-
-})();
+});

@@ -1,4 +1,4 @@
-var Activity = (function(Screen) {
+define(['lib/Framework/Screen'], function(Screen) {
 	'use strict';
 
 	function Activity(existingEntities) {
@@ -53,4 +53,4 @@ var Activity = (function(Screen) {
 
 	return Activity;
 
-}(Screen));
+});

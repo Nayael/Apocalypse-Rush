@@ -1,4 +1,4 @@
-var Application = (function(Stage) {
+define(['lib/Framework/Stage'], function(Stage) {
 	'use strict';
 
 	function Application(stage) {
@@ -80,4 +80,4 @@ var Application = (function(Stage) {
 	}
 
 	return Application;
-}(Stage));
+});

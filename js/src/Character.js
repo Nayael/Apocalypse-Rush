@@ -1,4 +1,4 @@
-var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphics) {
+define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib/Framework/Graphics'], function(Entity, Keyboard, GamepadManager, Graphics) {
 	'use strict';
 
 	window.bulletsPool = [];
@@ -413,4 +413,4 @@ var Character = (function(Entity, Keyboard, GamepadManager, StateMachine, Graphi
 
 	return Character;
 
-}(Entity, Keyboard, GamepadManager, StateMachine, Graphics));
+});

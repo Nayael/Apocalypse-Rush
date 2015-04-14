@@ -1,4 +1,4 @@
-var Screen = (function() {
+define(function() {
     'use strict';
 
     function Screen(activity, entities) {
@@ -78,4 +78,4 @@ var Screen = (function() {
 
     return Screen;
 
-})();
+});

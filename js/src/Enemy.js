@@ -1,4 +1,4 @@
-var Enemy = (function(Entity, Graphics) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics'], function(Entity, Graphics) {
 	'use strict';
 
 	function Enemy(params) {
@@ -76,4 +76,4 @@ var Enemy = (function(Entity, Graphics) {
 	}
 
 	return Enemy;
-}(Entity, Graphics));
+});

@@ -1,4 +1,4 @@
-var UI = (function(Graphics, AssetManager) {
+define(['lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Graphics, AssetManager) {
 	'use strict';
 
 	function UI(nbPlayers) {
@@ -93,4 +93,4 @@ var UI = (function(Graphics, AssetManager) {
 	}
 
 	return UI;
-}(Graphics, AssetManager));
+});

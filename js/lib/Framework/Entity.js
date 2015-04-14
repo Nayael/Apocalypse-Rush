@@ -1,4 +1,4 @@
-var Entity = (function(MakeEventDispatcher) {
+define(['lib/Framework/MakeEventDispatcher'], function(MakeEventDispatcher) {
 	'use strict';
 
 	function Entity(params) {
@@ -37,4 +37,5 @@ var Entity = (function(MakeEventDispatcher) {
 	};
 
 	return Entity;
-}(MakeEventDispatcher));
+
+});
