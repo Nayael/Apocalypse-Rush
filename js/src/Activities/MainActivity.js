@@ -7,9 +7,13 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 		if (!(this instanceof MainActivity)) {
 			return new MainActivity(params);
 		}
-		Activity.apply(this, params);
+		Activity.apply(this, arguments);
 
 		this._assets = assets;
+        this.players = [];
+
+        this.canStart = false;
+
         this.loading_bar_outside = null;
         this.loading_bar_inside  = null;
         this.title               = null;
@@ -18,6 +22,7 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this.creditsLogo         = null;
         this.creditsLogoBack     = null;
         this.credits             = null;
+        this.playerIcons         = [];
 	}
 	MainActivity.inheritsFrom(Activity);
 
@@ -62,8 +67,8 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
             this.loading_bar_inside.graphics.spriteWidth = barTotalWidth * (e.completedCount / e.totalCount);
         };
 
-        var nbLoadedSounds = 0;
-        var soundLoadComplete = false;
+        var nbLoadedSounds     = 0;
+        var soundLoadComplete  = false;
         var imagesLoadComplete = false;
         this._assets.sounds = {
             MUSIC_Layer_01: new Howl({
@@ -295,13 +300,40 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._screen.addChild(splash);
         this._screen.addChild(this.title);
         this._screen.addChild(this.logo);
+
+        for (var i = 0, icon = null, playerStart = null; i < 4; i++) {
+            icon = {
+                graphics: new Graphics({
+                    x: 20,
+                    y: 60 + (i * 70)
+                }, {
+                    spritesheet: AssetManager.instance.assets.images["cursor_p" + (i + 1)]
+                })
+            };
+            playerStart = {
+                graphics: new Graphics({
+                    x: 75,
+                    y: 65 + (i * 70)
+                }, {
+                    spritesheet: AssetManager.instance.assets.images.playerStart
+                })
+            };
+
+            this._screen.addChild(icon);
+            this._screen.addChild(playerStart);
+            this.playerIcons.push({
+                icon: icon,
+                playerStart: playerStart
+            });
+        }
+
         this.showMenu();
 
-        this._assets.sounds["MUSIC_Amb_Menu"].play();
-        this._assets.sounds["MUSIC_Menu_Layer_01"].play();
-        this._assets.sounds["MUSIC_Menu_Layer_02"].play();
-        this._assets.sounds["MUSIC_Menu_Layer_03"].play();
-        this._assets.sounds["MUSIC_Menu_Layer_04"].play();
+        // this._assets.sounds["MUSIC_Amb_Menu"].play();
+        // this._assets.sounds["MUSIC_Menu_Layer_01"].play();
+        // this._assets.sounds["MUSIC_Menu_Layer_02"].play();
+        // this._assets.sounds["MUSIC_Menu_Layer_03"].play();
+        // this._assets.sounds["MUSIC_Menu_Layer_04"].play();
         this._assets.sounds["MUSIC_Menu_Layer_01"].volume(0.7);
         this._assets.sounds["MUSIC_Menu_Layer_02"].volume(0.7);
         this._assets.sounds["MUSIC_Menu_Layer_03"].volume(0.7);
@@ -310,15 +342,18 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 
     MainActivity.prototype.showMenu = function () {
         this._assets.sounds["HUD_Switch"].play();
-        this._screen.addChild(this.pressStart);
         this._screen.addChild(this.creditsLogo);
 
         // Blink press start
+        this._screen.addChild(this.pressStart);
         var blink = setInterval(function () {
             this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
+            for (var i = 0; i < this.playerIcons.length; i++) {
+                this.playerIcons[i].playerStart.graphics.enabled = !this.playerIcons[i].playerStart.graphics.enabled;
+            }
         }.bind(this), 600);
 
-        Keyboard.on('keydown', 'SPACE', onStartButtonPressed.bind(this));
+        Keyboard.on('keydown', 'ENTER', onStartButtonPressed.bind(this));
         Keyboard.on('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
         GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown, this);
 
@@ -333,7 +368,7 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 
         function onStartButtonPressed (e) {
             clearInterval(blink);
-            Keyboard.remove('keydown', 'SPACE', onStartButtonPressed.bind(this));
+            Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
             Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
             GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
             this._assets.sounds["HUD_Click"].play();
@@ -342,7 +377,7 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 
         function onBackButtonPressed (e) {
             clearInterval(blink);
-            Keyboard.remove('keydown', 'SPACE', onStartButtonPressed.bind(this));
+            Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
             Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
             GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
             this.showCredits();
@@ -350,7 +385,6 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
     }
 
     MainActivity.prototype.showCredits = function () {
-
         this._assets.sounds["HUD_Switch"].play();
         this._screen.removeChild(this.pressStart);
         this._screen.removeChild(this.creditsLogo);
@@ -378,15 +412,19 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._screen.removeChild(this.credits);
     }
 
+    MainActivity.prototype.showPressStart = function () {
+        
+    }
+
     MainActivity.prototype.startGame = function () {
         this.loading_bar_outside = null;
-        this.loading_bar_inside = null;
-        this.title = null;
-        this.pressStart = null;
-        this.logo = null;
-        this.creditsLogo = null;
-        this.creditsLogoBack = null;
-        this.credits = null;
+        this.loading_bar_inside  = null;
+        this.title               = null;
+        this.pressStart          = null;
+        this.logo                = null;
+        this.creditsLogo         = null;
+        this.creditsLogoBack     = null;
+        this.credits             = null;
 
 
         this._assets.sounds["MUSIC_Amb_Menu"].stop();
@@ -395,18 +433,20 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._assets.sounds["MUSIC_Menu_Layer_03"].stop();
         this._assets.sounds["MUSIC_Menu_Layer_04"].stop();
 
-        this._assets.sounds["MUSIC_Amb_Menu"] = null;
+        this._assets.sounds["MUSIC_Amb_Menu"]      = null;
         this._assets.sounds["MUSIC_Menu_Layer_01"] = null;
         this._assets.sounds["MUSIC_Menu_Layer_02"] = null;
         this._assets.sounds["MUSIC_Menu_Layer_03"] = null;
         this._assets.sounds["MUSIC_Menu_Layer_04"] = null;
 
-        window.gameActivity = new GameActivity({
-            level: 0
-        });
         this.application.removeActivity(this);
-        this.application.addActivity(gameActivity);
-        gameActivity.launch(this._assets);
+        
+        this.application.addActivity(new GameActivity({
+            level: 0,
+            players: this.players
+        })).launch({
+            assets: this._assets
+        });
     }
 
 	return MainActivity;

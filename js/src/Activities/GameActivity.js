@@ -20,10 +20,10 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	}
 	GameActivity.inheritsFrom(Activity);
 
-	GameActivity.prototype.launch = function(assets) {
-		this._assets = assets;
+	GameActivity.prototype.launch = function(params) {
+		this._assets = params.assets;
 		this.initMap();
-		this.initPlayers();
+		this.initPlayers(players);
 		this.launchGame();
 	};
 
@@ -45,7 +45,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 		this._assets.sounds["MUSIC_Layer_04"].volume(0);
 	};
 
-	GameActivity.prototype.initPlayers = function () {
+	GameActivity.prototype.initPlayers = function (players) {
 		var controllers = GamepadManager.instance.getControllers();
 		for (var i = 0, character; i < controllers.length; i++) {
 			if (i >= 4) {
@@ -183,7 +183,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 			playerY = player.y + player.height / 2;
 			if ((this.bomb.x - playerX) * (this.bomb.x - playerX) + (this.bomb.y - playerY) * (this.bomb.y - playerY) < ((this.bomb.radius + Consts.CHARACTER_RADIUS) * (this.bomb.radius + Consts.CHARACTER_RADIUS))) {
 				respawnX = player.x - (player.x - this._map.cameraOffset) * (2/3);
-				window.gameActivity._assets.sounds["SFX_Impact_Siren_01"].play();
+				this._assets.sounds["SFX_Impact_Siren_01"].play();
 				player.die({
 					x: respawnX
 				});
@@ -226,7 +226,6 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	}
 
 	GameActivity.prototype.nextLevel = function() {
-		// window.gameActivity = null;
 	    this.application.removeActivity(this);
 	    this._entities.length = 0;
 	    this._players.length = 0;

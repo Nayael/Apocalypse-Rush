@@ -36,6 +36,7 @@ define(['lib/Framework/Stage'], function(Stage) {
 			if (activity.init) {
 				activity.init();
 			}
+			return activity;
 		};
 
 		this.removeActivity = function (activity) {
