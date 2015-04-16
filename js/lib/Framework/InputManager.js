@@ -121,8 +121,8 @@ define(['lib/Framework/MakeEventDispatcher'], function (MakeEventDispatcher) {
             inputEvent.screenY  = eventData.screenY;
             inputEvent.clientX  = eventData.clientX;
             inputEvent.clientY  = eventData.clientY;
-            inputEvent.stageX   = (inputEvent.clientX - canvas.offsetLeft) / canvas.scaleFactor;
-            inputEvent.stageY   = (inputEvent.clientY - canvas.offsetTop) / canvas.scaleFactor;
+            inputEvent.stageX   = (inputEvent.clientX - (canvas.offsetLeft ? canvas.offsetLeft : 0)) / canvas.scaleFactor;
+            inputEvent.stageY   = (inputEvent.clientY - (canvas.offsetTop ? canvas.offsetTop : 0)) / canvas.scaleFactor;
             inputEvent.canvasX  = inputEvent.stageX * canvas.scaleFactor;
             inputEvent.canvasY  = inputEvent.stageY * canvas.scaleFactor;
             inputEvent.ctrlKey  = eventData.ctrlKey;

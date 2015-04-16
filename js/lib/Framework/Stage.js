@@ -185,8 +185,12 @@ define(['lib/Framework/MakeEventDispatcher', 'lib/Framework/InputManager'], func
             }
 
             MakeEventDispatcher(touchedChild);
-            e.stageX -= touchedChild.stageX;
-            e.stageY -= touchedChild.stageY;
+            if (touchedChild.stageX) {
+                e.stageX -= touchedChild.stageX;
+            }
+            if (touchedChild.stageY) {
+                e.stageY -= touchedChild.stageY;
+            }
             e.target = touchedChild;
             touchedChild.dispatch(e.type, e);
         };

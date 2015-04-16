@@ -1,5 +1,5 @@
-define(['lib/Framework/Activity', 'src/Activities/GameActivity', 'Howl', 'src/Consts', 'lib/Framework/AssetManager', 'lib/Utils', 'lib/Framework/GamepadManager', 'Keyboard', 'lib/Framework/Entity', 'lib/Framework/Graphics'],
-function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, Entity, Graphics) {
+define(['lib/Framework/Activity', 'src/Activities/GameActivity', 'Howl', 'src/Consts', 'lib/Framework/AssetManager', 'lib/Utils', 'lib/Framework/GamepadManager', 'Keyboard', 'lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/InputManager', 'lib/Framework/MakeEventDispatcher'],
+function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManager, Keyboard, Entity, Graphics, InputManager, MakeEventDispatcher) {
 	'use strict';
 
 	function MainActivity(params) {
@@ -274,6 +274,8 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
                 localX: -1280
             })
         };
+        MakeEventDispatcher(splash);
+        splash.addListener(InputManager.InputEvent.TOUCH_MOVE, this.onBgHovered, this);
 
         this.title = {
             graphics: new Graphics({x: Consts.SCREEN_WIDTH / 2, y: 100}, {
@@ -312,6 +314,9 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
                 spritesheet: AssetManager.instance.assets.images.logo,
             })
         };
+        MakeEventDispatcher(this.logo);
+        this.logo.addListener(InputManager.InputEvent.TOUCH_CLICKED, this.onLogoClicked, this);
+        this.logo.addListener(InputManager.InputEvent.TOUCH_MOVE, this.onLogoHovered, this);
 
         this._screen.addChild(splash);
         this._screen.addChild(this.title);
@@ -556,9 +561,22 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         }
     }
 
+    MainActivity.prototype.onLogoClicked = function (e) {
+        window.open("http://html5gamejam.org/#/home");
+    }
+
+    MainActivity.prototype.onLogoHovered = function (e) {
+        this.application.getStage().canvas.style.cursor = "pointer";
+    }
+
+    MainActivity.prototype.onBgHovered = function (e) {
+        this.application.getStage().canvas.style.cursor = "default";
+    }
+
     MainActivity.prototype.startGame = function () {
         // remove all the listeners on the GamepadManager
         GamepadManager.instance.listenersFor = {};
+        this.logo.removeListener(InputManager.InputEvent.TOUCH_CLICKED, this.onLogoClicked);
 
         this.loading_bar_outside = null;
         this.loading_bar_inside  = null;
