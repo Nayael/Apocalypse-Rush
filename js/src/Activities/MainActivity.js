@@ -384,6 +384,17 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, this.onButtonDownForControl, this);
 
         this.showMenu();
+        var blink = setInterval(function () {
+            // this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
+            for (var i = 0, j = 0, playerIconList = null; i < this.playerIcons.length; i++) {
+                playerIconList = this.playerIcons[i];
+                if (playerIconList.playerStarts) {
+                    for (j = 0; j < playerIconList.playerStarts.length; j++) {
+                        playerIconList.playerStarts[j].graphics.enabled = !playerIconList.playerStarts[j].graphics.enabled;
+                    }
+                }
+            }
+        }.bind(this), 500);
 
         this._assets.sounds["MUSIC_Amb_Menu"].play();
         this._assets.sounds["MUSIC_Menu_Layer_01"].play();
@@ -417,17 +428,6 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 
         // Blink press start
         this._screen.addChild(this.pressStart);
-        var blink = setInterval(function () {
-            this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
-            for (var i = 0, j = 0, playerIconList = null; i < this.playerIcons.length; i++) {
-                playerIconList = this.playerIcons[i];
-                if (playerIconList.playerStarts) {
-                    for (j = 0; j < playerIconList.playerStarts.length; j++) {
-                        playerIconList.playerStarts[j].graphics.enabled = !playerIconList.playerStarts[j].graphics.enabled;
-                    }
-                }
-            }
-        }.bind(this), 500);
 
         Keyboard.on('keydown', 'ENTER', onStartButtonPressed.bind(this));
         Keyboard.on('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
@@ -443,21 +443,31 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         }
 
         function onStartButtonPressed (e) {
-            for (var i = 0; i < this.players.length; i++) {
-                if (this.players[i].gamepadID == e.gamepad) {
-                    clearInterval(blink);
-                    Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
-                    Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
-                    GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
-                    this._assets.sounds["HUD_Click"].play();
-                    this.startGame();
-                    break;
+            var playerPressed = false;
+
+            if (e.type == "keydown") {
+                playerPressed = true;
+            } else {
+                for (var i = 0; i < this.players.length; i++) {
+                    if (this.players[i].gamepadID == e.gamepad) {
+                        playerPressed = true;
+                        break;
+                    }
                 }
             }
+
+            if (!playerPressed) {
+                return;
+            }
+
+            Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
+            Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
+            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+            this._assets.sounds["HUD_Click"].play();
+            this.startGame();
         }
 
         function onBackButtonPressed (e) {
-            clearInterval(blink);
             Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
             Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
             GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
