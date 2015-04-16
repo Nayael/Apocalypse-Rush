@@ -49,7 +49,7 @@ var assets = (function() {
             "cursor_p2"                : ["assets/textures/cursor_p2.png", 'game'],
             "cursor_p3"                : ["assets/textures/cursor_p3.png", 'game'],
             "cursor_p4"                : ["assets/textures/cursor_p4.png", 'game'], 
-            "keyboard"                 : ["assets/textures/keyboard.png", 'game'],
+            "keyboard"                 : ["assets/textures/keyboardIcon.png", 'game'],
             "keyboardTransparent"      : ["assets/textures/keyboardTransparent.png", 'game'],
             "controllerIcon"           : ["assets/textures/controllerIcon.png", 'game'],
             "controllerIconTransparent": ["assets/textures/controllerIconTransparent.png", 'game'],
