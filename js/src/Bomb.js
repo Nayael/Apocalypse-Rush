@@ -28,13 +28,13 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 	Bomb.inheritsFrom(Entity);
 
 	Bomb.prototype.reset = function() {
-		gameActivity._screen.removeChild(this);
+		this.activity._screen.removeChild(this);
 		this.moving = false;
 		this.alarm.stop();
 		this.bombSpawnDelay = (10 + Math.random() * 10);
 		this.nextAlarmDelay = (2 + Math.random() * 3);
 		this.enabled = true;
-		this.x = gameActivity._map.cameraOffset + 2200;
+		this.x = this.activity._map.cameraOffset + 2200;
 	}
 
 	Bomb.prototype.update = function (dt) {
@@ -49,19 +49,19 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 			this.alarm.fade(0.9, 0, 2000);
 			this.moving = true;
 			this.missileSound.play();
-			var player = gameActivity.getFirstPlayer();
+			var player = this.activity.getFirstPlayer();
 			this.y = player ? player.y : 300;
-			gameActivity._screen.addChild(this);
+			this.activity._screen.addChild(this);
 		}
 
 		if (this.moving) {
 			this.x -= this.speed;
 
-			if (this.x < gameActivity._map.cameraOffset - 200) {
+			if (this.x < this.activity._map.cameraOffset - 200) {
 				this.reset();
 			}
 		} else {
-			this.x = gameActivity._map.cameraOffset + 2200;
+			this.x = this.activity._map.cameraOffset + 2200;
 		}
 	}
 

@@ -1,4 +1,5 @@
-define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib/Framework/Graphics'], function(Entity, Keyboard, GamepadManager, Graphics) {
+define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib/Framework/Graphics', 'lib/Framework/AssetManager', 'src/Consts', 'src/Bullet'],
+function(Entity, Keyboard, GamepadManager, Graphics, AssetManager, Consts, Bullet) {
 	'use strict';
 
 	function Character(params) {
@@ -28,7 +29,7 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 		this.isCooldown         = false;
 
 		// ID of the character is also the gamepad ID
-		this.id = -1;
+		this.id = params.id;
 		this.flags = [];
 		this.joystickVal = 0;
 		this.move = {
@@ -37,6 +38,22 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 		};
 
 		this.sprites = params.sprites;
+		this.keyboard = params.keyboard;
+		this.gamepadID = parseInt(params.gamepadID);
+
+		this.addFlag("canRun");
+		this.addFlag("canJump");
+		this.addFlag("canShoot");
+
+		this.cursorGraphics = {
+			graphics : new Graphics(this, {
+				spritesheet: AssetManager.instance.assets.images["cursor_p" + (this.id + 1)],
+				localX: 18,
+				localY: -40
+			}
+		)};
+		this.activity._screen.addChild(this.cursorGraphics);
+
 		this.handleAnim();
 	}
 	Character.inheritsFrom(Entity);
@@ -64,36 +81,19 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 		return this.flags.indexOf(flag) != -1;
 	}
 
-	Character.prototype.takeControl = function (id) {
-		this.id = id;
-		this.addFlag("canRun");
-		this.addFlag("canJump");
-		this.addFlag("canShoot");
-
-		this.cursorGraphics = {
-			graphics : new Graphics(this, {
-				spritesheet: AssetManager.instance.assets.images["cursor_p" + (id + 1)],
-				localX: 18,
-				localY: -40
-			}
-		)};
-
-		this.activity._screen.addChild(this.cursorGraphics);
-	}
-
 	Character.prototype.addPoints = function (value) {
 		this.points += value;
-		gameActivity.ui.updateScore(this.id, this.points);
+		this.activity.ui.updateScore(this.id, this.points);
 	}
 
 	Character.prototype.removePoints = function (value) {
 		this.points -= value;
-		gameActivity.ui.updateScore(this.id, this.points);
+		this.activity.ui.updateScore(this.id, this.points);
 	}
 
 	Character.prototype.setPoints = function (value) {
 		this.points = value;
-		gameActivity.ui.updateScore(this.id, this.points);
+		this.activity.ui.updateScore(this.id, this.points);
 	}
 
 	Character.prototype.die = function (respawn) {
@@ -177,22 +177,26 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 	}
 
 	Character.prototype.handleControls = function (dt) {
-		if (this.id == -1) {
-			return;
-		}
+		var isGamepad = this.gamepadID >= 0;
 
 		// Move
 		if (this.hasFlag("canRun")) {
 			this.removeFlag("running");
 
-			var curJoystickVal = GamepadManager.instance.getController(this.id).gamepad.axes[0];
+			var controller = GamepadManager.instance.getController(parseInt(this.gamepadID));
+			if (isGamepad && !controller) {
+				return;
+			}
+			var curJoystickVal = isGamepad ? controller.gamepad.axes[0] : 0;
 			var joystickMove = curJoystickVal - this.joystickVal;
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("RIGHT"))) {
+			if (isGamepad && GamepadManager.instance.isButtonDown(this.gamepadID, GamepadManager.instance.getButtonID("RIGHT"))
+				|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'RIGHT_ARROW' : 'D'])) {
 				++this.move.x;
 				this.addFlag("running");
 			}
 
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("LEFT"))) {
+			if (isGamepad && GamepadManager.instance.isButtonDown(this.gamepadID, GamepadManager.instance.getButtonID("LEFT"))
+				|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'LEFT_ARROW' : 'Q'])) {
 				--this.move.x;
 				this.addFlag("running");
 			}
@@ -204,7 +208,8 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 
 			if (this.hasFlag("canJump")) {
 				this.removeFlag("jumping");
-				if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("A"))) {
+				if (isGamepad && GamepadManager.instance.isButtonDown(this.gamepadID, GamepadManager.instance.getButtonID("A"))
+					|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'UP_ARROW' : 'Z'])) {
 					this.jump();
 					this.removeFlag("canJump");
 					this.addFlag("jumping");
@@ -214,7 +219,8 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 
 		if (this.hasFlag("canShoot")) {
 			this.removeFlag("shooting");
-			if (GamepadManager.instance.isButtonDown(this.id, GamepadManager.instance.getButtonID("X"))) {
+			if (isGamepad && GamepadManager.instance.isButtonDown(this.gamepadID, GamepadManager.instance.getButtonID("X"))
+				|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'CTRL' : 'SPACE'])) {
 				GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp, this);
 				this.shoot();
 				this.addFlag("shooting");
@@ -223,9 +229,11 @@ define(['lib/Framework/Entity', 'Keyboard', 'lib/Framework/GamepadManager', 'lib
 	}
 
 	Character.prototype.onButtonUp = function (e) {
-		GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp);
-		if (e.button == "X" && e.gamepad == this.id) {
-			this.shootCooldownValue = this.shootCooldown;
+		if (this.gamepadID >= 0) {
+			GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp);
+			if (e.button == "X" && e.gamepad == this.gamepadID) {
+				this.shootCooldownValue = this.shootCooldown;
+			}
 		}
 	}
 

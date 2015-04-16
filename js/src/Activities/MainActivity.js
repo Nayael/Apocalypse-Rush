@@ -10,7 +10,23 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 		Activity.apply(this, arguments);
 
 		this._assets = assets;
-        this.players = [];
+        this.players = [{
+            id: 0,
+            gamepadID: -1,
+            keyboard: false
+        }, {
+            id: 1,
+            gamepadID: -1,
+            keyboard: false
+        }, {
+            id: 2,
+            gamepadID: -1,
+            keyboard: false
+        }, {
+            id: 3,
+            gamepadID: -1,
+            keyboard: false
+        }];
 
         this.canStart = false;
 
@@ -301,7 +317,8 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._screen.addChild(this.title);
         this._screen.addChild(this.logo);
 
-        for (var i = 0, icon = null, playerStart = null; i < 4; i++) {
+        for (var i = 0, icon = null, controllerIcon = null, keyboardIcon = null, playerStart = null, playerStartKey = null; i < this.players.length; i++) {
+            playerStartKey = null;
             icon = {
                 graphics: new Graphics({
                     x: 20,
@@ -310,34 +327,88 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
                     spritesheet: AssetManager.instance.assets.images["cursor_p" + (i + 1)]
                 })
             };
+            controllerIcon = {
+                graphics: new Graphics({
+                    x: (i < 2 ? 150 : 75),
+                    y: 65 + (i * 70)
+                }, {
+                    spritesheet: AssetManager.instance.assets.images.controllerIconTransparent
+                })
+            };
             playerStart = {
                 graphics: new Graphics({
-                    x: 75,
-                    y: 65 + (i * 70)
+                    x: (i < 2 ? 215 : 140),
+                    y: 50 + (i * 70)
                 }, {
                     spritesheet: AssetManager.instance.assets.images.playerStart
                 })
             };
 
+            if (i < 2) {
+                keyboardIcon = {
+                    graphics: new Graphics({
+                        x: 75,
+                        y: 55 + (i * 70)
+                    }, {
+                        spritesheet: AssetManager.instance.assets.images.keyboardTransparent
+                    })
+                };
+                playerStartKey = {
+                    graphics: new Graphics({
+                        x: 295,
+                        y: 62 + (i * 70)
+                    }, {
+                        spritesheet: AssetManager.instance.assets.images.sKey
+                    })
+                };
+                this._screen.addChild(keyboardIcon);
+                this._screen.addChild(playerStartKey);
+            }
+
             this._screen.addChild(icon);
+            this._screen.addChild(controllerIcon);
             this._screen.addChild(playerStart);
             this.playerIcons.push({
                 icon: icon,
-                playerStart: playerStart
+                controllerIcon: controllerIcon,
+                keyboardIcon: keyboardIcon,
+                playerStarts: playerStartKey ? [playerStart, playerStartKey] : [playerStart]
             });
         }
 
+        // The first player necessarily has control
+        this.takePlayerControl(false, 0);
+
+        // The players can take control of characters
+        Keyboard.on('keydown', 'S', secondPlayerTakeControl.bind(this));
+        GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_DOWN, this.onButtonDownForControl, this);
+
         this.showMenu();
 
-        // this._assets.sounds["MUSIC_Amb_Menu"].play();
-        // this._assets.sounds["MUSIC_Menu_Layer_01"].play();
-        // this._assets.sounds["MUSIC_Menu_Layer_02"].play();
-        // this._assets.sounds["MUSIC_Menu_Layer_03"].play();
-        // this._assets.sounds["MUSIC_Menu_Layer_04"].play();
+        this._assets.sounds["MUSIC_Amb_Menu"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_01"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_02"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_03"].play();
+        this._assets.sounds["MUSIC_Menu_Layer_04"].play();
         this._assets.sounds["MUSIC_Menu_Layer_01"].volume(0.7);
         this._assets.sounds["MUSIC_Menu_Layer_02"].volume(0.7);
         this._assets.sounds["MUSIC_Menu_Layer_03"].volume(0.7);
         this._assets.sounds["MUSIC_Menu_Layer_04"].volume(0.7);
+
+        function secondPlayerTakeControl (e) {
+            Keyboard.remove('keydown', 'S', secondPlayerTakeControl.bind(this));
+            this.takePlayerControl(false, 1);
+        }
+    }
+
+    /**
+     * The player will take control of a character with his gamepad
+     * @param  {Event} e The event triggered by the Gamepadmanager
+     */
+    MainActivity.prototype.onButtonDownForControl = function (e) {
+        if (e.button == "A" && e.gamepad < this.players.length) {
+            this.takePlayerControl(true, e.gamepad);
+        }
     }
 
     MainActivity.prototype.showMenu = function () {
@@ -348,10 +419,15 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._screen.addChild(this.pressStart);
         var blink = setInterval(function () {
             this.pressStart.graphics.enabled = !this.pressStart.graphics.enabled;
-            for (var i = 0; i < this.playerIcons.length; i++) {
-                this.playerIcons[i].playerStart.graphics.enabled = !this.playerIcons[i].playerStart.graphics.enabled;
+            for (var i = 0, j = 0, playerIconList = null; i < this.playerIcons.length; i++) {
+                playerIconList = this.playerIcons[i];
+                if (playerIconList.playerStarts) {
+                    for (j = 0; j < playerIconList.playerStarts.length; j++) {
+                        playerIconList.playerStarts[j].graphics.enabled = !playerIconList.playerStarts[j].graphics.enabled;
+                    }
+                }
             }
-        }.bind(this), 600);
+        }.bind(this), 500);
 
         Keyboard.on('keydown', 'ENTER', onStartButtonPressed.bind(this));
         Keyboard.on('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
@@ -359,20 +435,25 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
 
         function onButtonDown (e) {
             if (e.button == "START") {
-                onStartButtonPressed(e);
+                onStartButtonPressed.call(this, e);
             }
             if (e.button == "BACK") {
-                onBackButtonPressed(e);
+                onBackButtonPressed.call(this, e);
             }
         }
 
         function onStartButtonPressed (e) {
-            clearInterval(blink);
-            Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
-            Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
-            GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
-            this._assets.sounds["HUD_Click"].play();
-            this.startGame();
+            for (var i = 0; i < this.players.length; i++) {
+                if (this.players[i].gamepadID == e.gamepad) {
+                    clearInterval(blink);
+                    Keyboard.remove('keydown', 'ENTER', onStartButtonPressed.bind(this));
+                    Keyboard.remove('keydown', 'ESCAPE', onBackButtonPressed.bind(this));
+                    GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_DOWN, onButtonDown);
+                    this._assets.sounds["HUD_Click"].play();
+                    this.startGame();
+                    break;
+                }
+            }
         }
 
         function onBackButtonPressed (e) {
@@ -395,7 +476,7 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         
         function onButtonDown (e) {
             if (e.button == "BACK") {
-                onBackButtonPressed(e);
+                onBackButtonPressed.call(this, e);
             }
         }
         
@@ -412,11 +493,63 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._screen.removeChild(this.credits);
     }
 
-    MainActivity.prototype.showPressStart = function () {
-        
+    MainActivity.prototype.takePlayerControl = function (isGamepad, id) {
+        var i = 0,
+            player = null;
+
+        if (!isGamepad && id <= 1) {
+            player = this.players[id];
+            if (player.id == id && !player.keyboard) {
+                player.keyboard = true;
+            }
+            this.playerIcons[id].keyboardIcon.graphics.spritesheet = AssetManager.instance.assets.images.keyboard;
+            this._screen.removeChild(this.playerIcons[player.id].playerStarts[this.playerIcons[player.id].playerStarts.length - 1]);
+
+            // If there was a gamepad control on this player, we switch it to the next one
+            if (player.gamepadID != -1) {
+                var gamepadID = player.gamepadID;
+                player.gamepadID = -1;
+                this._screen.addChild(this.playerIcons[player.id].playerStarts[0]);
+                this.playerIcons[player.id].controllerIcon.graphics.spritesheet = AssetManager.instance.assets.images.controllerIconTransparent;
+                this.takePlayerControl(true, gamepadID);
+            }
+        } else if (isGamepad) {
+            // If there already is a player assigned to this gamepad, we ignore it
+            for (i = 0; i < this.players.length; i++) {
+                if (this.players[i].gamepadID == id) {
+                    return;
+                }
+            }
+
+            // First, put the keyboard-controllable players at the end of the array
+            var players = this.players.concat();
+            players.sort(function (a, b) {
+                if (a.keyboard && b.keyboard) {
+                    return 0;
+                }
+                if (a.keyboard && !b.keyboard) {
+                    return 1;
+                }
+                return -1;
+            })
+            
+            for (i = 0; i < players.length; i++) {
+                player = players[i];
+                // We take the first player that doesn't have a gamepad assigned to it
+                if (player.gamepadID == -1) {
+                    this.players[player.id].gamepadID = id;
+                    this.playerIcons[player.id].controllerIcon.graphics.spritesheet = AssetManager.instance.assets.images.controllerIcon;
+                    this._screen.removeChild(this.playerIcons[player.id].playerStarts[0]);
+                    break;    
+                }
+            }
+        }
     }
 
     MainActivity.prototype.startGame = function () {
+        // remove all the listeners on the GamepadManager
+        GamepadManager.instance.listenersFor = {};
+
         this.loading_bar_outside = null;
         this.loading_bar_inside  = null;
         this.title               = null;
@@ -440,11 +573,18 @@ function(Activity, GameActivity, Howl, Consts, AssetManager, Utils, GamepadManag
         this._assets.sounds["MUSIC_Menu_Layer_04"] = null;
 
         this.application.removeActivity(this);
+
+        for (var i = 0; i < this.players.length; i++) {
+            if (!this.players[i].keyboard && this.players[i].gamepadID == -1) {
+                this.players.splice(i, 1);
+                --i;
+            }
+        }
         
         this.application.addActivity(new GameActivity({
-            level: 0,
-            players: this.players
+            level: 0
         })).launch({
+            players: this.players,
             assets: this._assets
         });
     }

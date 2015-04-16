@@ -1,5 +1,5 @@
-define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager'],
-function(Entity, Graphics, AssetManager) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager', 'src/Bullet'],
+function(Entity, Graphics, AssetManager, Bullet) {
 	'use strict';
 
 	function Enemy(params) {

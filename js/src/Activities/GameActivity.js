@@ -23,12 +23,15 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	GameActivity.prototype.launch = function(params) {
 		this._assets = params.assets;
 		this.initMap();
-		this.initPlayers(players);
+		this.initPlayers(params.players);
 		this.launchGame();
 	};
 
 	GameActivity.prototype.launchGame = function() {
-		this.ui = new UI(this._players.length);
+		this.ui = new UI({
+			nbPlayers: this._players.length,
+			activity: this
+		});
 		this.bomb = new Bomb({
 			activity: this
 		});
@@ -46,11 +49,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 	};
 
 	GameActivity.prototype.initPlayers = function (players) {
-		var controllers = GamepadManager.instance.getControllers();
-		for (var i = 0, character; i < controllers.length; i++) {
-			if (i >= 4) {
-				break;
-			}
+		for (var i = 0, character; i < players.length; i++) {
 			character = new Character({
 				activity: this,
 				sprites: {
@@ -64,15 +63,16 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 				width: 75,
 				height: 105,
 				spriteWidth: 75,
-				spriteHeight: 105
+				spriteHeight: 105,
+				id: players[i].id,
+				keyboard: players[i].keyboard,
+				gamepadID: players[i].gamepadID
 			});
 			character.x = 100 + i * 10;
 			this._entities.push(character);
 			this._players.push(character);
 
 			this._screen.addChild(character);
-
-			character.takeControl(i);
 		}
 	}
 
@@ -109,7 +109,6 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 		this.checkPlayersCollisionWithMap(dt);
 		this._map.checkCameraOffset();
 		this.checkCollideWithPlayers();
-
 	}
 
 	GameActivity.prototype.checkPlayersCollisionWithMap = function (dt) {
@@ -120,19 +119,13 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 		var collisionPoint;
 
 		for (var i = this._players.length; i--;) {
-			// console.log(this._players[i]);
-			// debugger;
 			collisionPoint = this._map.checkCollision({
 				x: this._players[i].x + this._players[i].width / 2,
 				y: this._players[i].y + this._players[i].height / 2,
 				radius: Consts.CHARACTER_RADIUS
 			});
 
-			// if (collisionPoint != null) {
-				this._players[i].handleCollision(collisionPoint);
-			// }
-
-			// console.log(collisionPoint);
+			this._players[i].handleCollision(collisionPoint);
 		}
 	}
 
@@ -152,13 +145,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 					characterX = character.x + character.width / 2;
 					characterY = character.y + character.height / 2;
 					if ((bullet.x - characterX) * (bullet.x - characterX) + (bullet.y - characterY) * (bullet.y - characterY) < ((bullet.radius + Consts.CHARACTER_RADIUS) * (bullet.radius + Consts.CHARACTER_RADIUS))) {
-						if (bullet.direction == 1) {
-							respawnX = character.x - 100;
-							// respawnX = character.x - (character.x - this._map.cameraOffset) * (2/3);
-						} else {
-							respawnX = character.x - 100;
-							// respawnX = character.x + (-250 + Math.floor(Math.random() * 500));
-						}
+						respawnX = character.x - 100;
 
 						// Points to the player
 						killer = this.getPlayer(bullet.owner);
@@ -194,6 +181,7 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 
 	GameActivity.prototype.onGeneralsDead = function () {
 		this.ui.showLeaderboard();
+		Keyboard.on('keydown', 'ENTER', this.nextLevel.bind(this));
 		GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard, this);
 	}
 
@@ -220,19 +208,19 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 
 	GameActivity.prototype.onButtonDownLeaderboard = function (e) {
 		if (e.button == "START") {
-			GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard);
 			this.nextLevel();
 		}
 	}
 
 	GameActivity.prototype.nextLevel = function() {
+		GamepadManager.instance.removeListener(GamepadManager.GamepadEvent.BUTTON_PRESSED, this.onButtonDownLeaderboard);
+		Keyboard.remove('keydown', 'ENTER', this.nextLevel.bind(this));
+
 	    this.application.removeActivity(this);
 	    this._entities.length = 0;
-	    this._players.length = 0;
 	    this.enemies.length = 0;
 	    this.bullets.length = 0;
 	    this._entities = null;
-	    this._players = null;
 	    this.enemies = null;
 	    this.bullets = null;
 	    this.ui.destroy();
@@ -243,14 +231,27 @@ function(Activity, PxLoader, PxLoaderImage, Entity, Graphics, InputManage, Map, 
 		this._assets.sounds["MUSIC_Layer_03"].stop();
 		this._assets.sounds["MUSIC_Layer_04"].stop();
 
-	    var assets = this._assets;
+	    var assetsData = this._assets;
 	    this._assets = null;
 
-		var gameActivity = new GameActivity({
+		var playersData = [];
+		for (var i = 0; i < this._players.length; i++) {
+			playersData.push({
+				id: this._players[i].id,
+				gamepadID: this._players[i].gamepadID,
+				keyboard: this._players[i].keyboard
+			});
+        }
+	    this._players.length = 0;
+	    this._players = null;
+
+        this.application.removeActivity(this);
+	    this.application.addActivity(new GameActivity({
             level: this.level == 0 ? 1 : 0
+        })).launch({
+            players: playersData,
+            assets: assetsData
         });
-	    this.application.addActivity(gameActivity);
-	    gameActivity.launch(assets);
 	}
 
 	return GameActivity;

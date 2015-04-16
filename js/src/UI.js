@@ -1,14 +1,14 @@
 define(['lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Graphics, AssetManager) {
 	'use strict';
 
-	function UI(nbPlayers) {
+	function UI(data) {
 		// enforces new
 		if (!(this instanceof UI)) {
-			return new UI(nbPlayers);
+			return new UI(data);
 		}
 
 		this.canvas = document.createElement('canvas');
-		var gameCanvas = gameActivity.application.getStage().canvas;
+		var gameCanvas = data.activity.application.getStage().canvas;
 		this.canvas.width = gameCanvas.width;
 		this.canvas.height = gameCanvas.height;
 		this.canvas.scaleFactor = gameCanvas.scaleFactor;
@@ -18,7 +18,7 @@ define(['lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Graphi
 		this.context = this.canvas.getContext('2d');
 		this.scores = [];
 
-		for (var i = 0, icon; i < nbPlayers; i++) {
+		for (var i = 0, icon; i < data.nbPlayers; i++) {
 			this.scores.push({
 				index: i,
 				value: 0

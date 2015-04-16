@@ -1,4 +1,5 @@
-define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager'], function(Entity, Graphics, AssetManager) {
+define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetManager', 'src/Consts'],
+function(Entity, Graphics, AssetManager, Consts) {
 	'use strict';
 
 	function Bullet(params) {
@@ -45,7 +46,7 @@ define(['lib/Framework/Entity', 'lib/Framework/Graphics', 'lib/Framework/AssetMa
 		});
 		if (collision != null) {
 			if (this.owner != -1 && collision.value == Consts.TYPES.DESTRUCTIBLE_WALL) {
-				var player = gameActivity.getPlayer(this.owner);
+				var player = this.activity.getPlayer(this.owner);
 				if (player) {
 					player.addPoints(1);
 				}
