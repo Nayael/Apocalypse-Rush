@@ -220,7 +220,7 @@ function(Entity, Keyboard, GamepadManager, Graphics, AssetManager, Consts, Bulle
 		if (this.hasFlag("canShoot")) {
 			this.removeFlag("shooting");
 			if (isGamepad && GamepadManager.instance.isButtonDown(this.gamepadID, GamepadManager.instance.getButtonID("X"))
-				|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'ENTER' : 'SPACE'])) {
+				|| this.keyboard && Keyboard.isDown(Keyboard[this.id == 0 ? 'M' : 'SPACE'])) {
 				GamepadManager.instance.addListener(GamepadManager.GamepadEvent.BUTTON_UP, this.onButtonUp, this);
 				this.shoot();
 				this.addFlag("shooting");
